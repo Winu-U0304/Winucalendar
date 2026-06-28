@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>プレミアム・フォトカレンダー</title>
-    <!-- 🔄 ここを c-style.css に変更しました -->
+    <!-- 🔄 ここをGitHub上のファイル名 c-style.css に完全に一致させました -->
     <link rel="stylesheet" href="c-style.css">
 </head>
 <body class="bg-theme">
@@ -15,7 +15,7 @@
             <h1 class="neon-text">DIARY LOGIN</h1>
             <p class="neon-sub">パスワードを入力して暗号化ファイルを開きます</p>
             <div class="login-box">
-                <input type="password" id="loginKey" placeholder="ログインコードを入力">
+                <input type="password" id="loginKey" placeholder="🔑 秘密のキーを入力...">
                 <button id="loginBtn">ENTER</button>
             </div>
             <p id="loginError" class="error-msg"></p>
@@ -24,20 +24,17 @@
 
     <!-- 📅 メイン画面（ログイン後に表示） -->
     <div id="mainSection" class="app-container hidden">
-        <!-- プレミアムヘッダー -->
         <header class="app-header">
             <div class="welcome-area">
                 <span class="welcome-neon">WELCOME</span>
                 <h2 id="currentUser"></h2>
             </div>
-            <!-- 日付関係なく入力できる全体自由メモ -->
             <div class="global-memo-wrap">
-                <textarea id="globalMemo" placeholder="📝自動保存"></textarea>
+                <textarea id="globalMemo" placeholder="📝 いつでも残せる自由メモ（自動保存）"></textarea>
             </div>
             <button id="logoutBtn">LOGOUT</button>
         </header>
 
-        <!-- カレンダーコントロール（画像のようなシンプルな配置へ） -->
         <div class="calendar-wrapper">
             <div class="calendar-sidebar">
                 <div id="calendarMonthEnglish" class="month-eng">February</div>
@@ -48,8 +45,6 @@
                     <button id="nextMonthBtn">▶</button>
                 </div>
             </div>
-
-            <!-- カレンダー本体のグリッド -->
             <div class="calendar-body">
                 <div class="calendar-grid" id="calendarGrid"></div>
             </div>
@@ -77,7 +72,7 @@
         </div>
     </div>
 
-    <!-- パズル形式のJavaScriptファイルを分割読み込み -->
+    <!-- 各JavaScriptファイルの読み込み -->
     <script src="c-s.i.js"></script>
     <script src="c-s.h.js"></script>
     <script src="c-s.r.js"></script>
