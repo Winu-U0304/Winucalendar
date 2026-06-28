@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>プレミアム・フォトカレンダー</title>
+    <title>カレンダーサイト</title>
     <!-- 🔄 ここをGitHub上のファイル名 c-style.css に完全に一致させました -->
     <link rel="stylesheet" href="c-style.css">
 </head>
@@ -15,7 +15,7 @@
             <h1 class="neon-text">DIARY LOGIN</h1>
             <p class="neon-sub">パスワードを入力して暗号化ファイルを開きます</p>
             <div class="login-box">
-                <input type="password" id="loginKey" placeholder="🔑 秘密のキーを入力...">
+                <input type="password" id="loginKey" placeholder="固有の認証キー（パスワード）を入力">
                 <button id="loginBtn">ENTER</button>
             </div>
             <p id="loginError" class="error-msg"></p>
@@ -30,7 +30,7 @@
                 <h2 id="currentUser"></h2>
             </div>
             <div class="global-memo-wrap">
-                <textarea id="globalMemo" placeholder="📝 いつでも残せる自由メモ（自動保存）"></textarea>
+                <textarea id="globalMemo" placeholder="自動保存"></textarea>
             </div>
             <button id="logoutBtn">LOGOUT</button>
         </header>
@@ -62,11 +62,11 @@
             <div class="modal-body-layout">
                 <div class="diary-section">
                     <label>📖 本日の日記</label>
-                    <textarea id="diaryInput" placeholder="今日あったことや感じたことを自由に記録しましょう..."></textarea>
+                    <textarea id="diaryInput" placeholder="日記を記入"></textarea>
                 </div>
                 <div class="todo-section">
                     <label>📌 タスク・メモ</label>
-                    <textarea id="memoInput" placeholder="やることリストや簡単なメモなど..."></textarea>
+                    <textarea id="memoInput" placeholder="メモを記入"></textarea>
                 </div>
             </div>
         </div>
