@@ -1,0 +1,40 @@
+/* 全体の基本設定 */
+body { font-family: sans-serif; background: #f0f2f5; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
+.card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 800px; width: 100%; transition: all 0.3s; }
+.hidden { display: none !important; }
+h1, h2, h3 { margin-top: 0; color: #333; }
+
+/* 🚪 ログイン画面のデザイン */
+.login-form { display: flex; gap: 10px; margin: 20px 0; }
+input[type=password] { flex-grow: 1; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px; outline: none; }
+input[type=password]:focus { border-color: #007bff; }
+.error-text { color: #dc3545; font-size: 14px; font-weight: bold; }
+
+/* 📅 カレンダーメイン画面のデザイン */
+.header-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+.calendar-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+button { padding: 10px 16px; font-size: 14px; font-weight: bold; border: none; border-radius: 6px; background: #007bff; color: white; cursor: pointer; transition: background 0.2s; }
+button:hover { background: #0056b3; }
+#logoutBtn { background: #6c757d; }
+#logoutBtn:hover { background: #5a6268; }
+
+/* カレンダーのマス目（7列のグリッド） */
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+.day-header { font-weight: bold; text-align: center; padding: 5px; background: #e9ecef; border-radius: 4px; color: #495057; }
+.day-cell { min-height: 80px; background: #fff; border: 1px solid #dee2e6; border-radius: 6px; padding: 6px; cursor: pointer; display: flex; flex-direction: column; transition: background 0.2s; position: relative; }
+.day-cell:hover { background: #e8f4ff; border-color: #b8daff; }
+.day-number { font-weight: bold; font-size: 14px; color: #6c757d; margin-bottom: 4px; }
+.day-cell.today { background: #fff3cd; border-color: #ffeeba; }
+.day-cell.today .day-number { color: #856404; }
+
+/* 日付マスの中のメモプレビュー */
+.memo-preview { font-size: 11px; color: #495057; background: #e2f0d9; padding: 2px 4px; border-radius: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; }
+
+/* 📝 メモ入力用ポップアップ（モーダル） */
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 100; }
+.modal-content { background: white; padding: 20px; border-radius: 10px; max-width: 500px; width: 90%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+textarea { width: 100%; height: 150px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; resize: none; margin: 15px 0; outline: none; }
+textarea:focus { border-color: #007bff; }
+.modal-buttons { display: flex; justify-content: flex-end; }
+#closeModalBtn { background: #28a745; }
+#closeModalBtn:hover { background: #218838; }

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ログイン式スケジュールカレンダー</title>
+    <!-- デザイン用の外部CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- 🚪 ログイン画面（最初はこれが表示される） -->
+    <div id="loginSection" class="card">
+        <h1>カレンダーメモにログイン</h1>
+        <p>あなた専用のログインキー（パスワード）を入力してください。※初めての方は好きな文字を入力すると新規登録されます。</p>
+        <div class="login-form">
+            <input type="password" id="loginKey" placeholder="ログインキーを入力...">
+            <button id="loginBtn">ログイン</button>
+        </div>
+        <p id="loginError" class="error-text"></p>
+    </div>
+
+    <!-- 📅 メイン画面（ログイン成功後に表示される） -->
+    <div id="mainSection" class="card hidden">
+        <div class="header-bar">
+            <h2>ユーザー: <span id="currentUser"></span> のカレンダー</h2>
+            <button id="logoutBtn">ログアウト</button>
+        </div>
+
+        <!-- カレンダーの月切り替え用 -->
+        <div class="calendar-nav">
+            <button id="prevMonthBtn">◀ 前の月</button>
+            <h3 id="calendarTitle">2026年 6月</h3>
+            <button id="nextMonthBtn">次の月 ▶</button>
+        </div>
+
+        <!-- カレンダー本体（曜日と日付が並ぶ場所） -->
+        <div class="calendar-grid" id="calendarGrid"></div>
+    </div>
+
+    <!-- 📝 メモ入力用ポップアップ（日付をクリックしたときに出る） -->
+    <div id="memoModal" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="modalDateTitle">2026年06月01日のメモ</h3>
+            <textarea id="memoInput" placeholder="ここに予定やメモを記入（自動保存されます）..."></textarea>
+            <div class="modal-buttons">
+                <button id="closeModalBtn">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分割したプログラム(JavaScript)を順番に読み込む -->
+    <script src="c-s.i.js"></script>
+    <script src="c-s.r.js"></script>
+    <script src="c-s.m.js"></script>
+</body>
+</html>
