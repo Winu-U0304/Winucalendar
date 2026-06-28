@@ -4,25 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>カレンダーサイト</title>
-    <!-- 🔄 ここをGitHub上のファイル名 c-style.css に完全に一致させました -->
     <link rel="stylesheet" href="c-style.css">
 </head>
 <body class="bg-theme">
 
-    <!-- 🚪 全面的ネオン風ログイン画面 -->
+    <!-- 🚪 白ベースの上品な大人向けログイン画面 -->
     <div id="loginSection" class="login-wrapper">
-        <div class="neon-card">
-            <h1 class="neon-text">DIARY LOGIN</h1>
-            <p class="neon-sub">パスワードを入力して暗号化ファイルを開きます</p>
+        <div class="premium-login-card">
+            <h1 class="login-title">🔒 DIARY SERVICE</h1>
+            <p class="login-sub-text">クラウド暗号化ファイルにアクセスするため、専用の認証キーを入力してください。</p>
             <div class="login-box">
-                <input type="password" id="loginKey" placeholder="固有の認証キー（パスワード）を入力">
-                <button id="loginBtn">ENTER</button>
+                <input type="password" id="loginKey" placeholder="固有の認証キー（パスワード）を入力...">
+                <button id="loginBtn">ログイン</button>
             </div>
             <p id="loginError" class="error-msg"></p>
         </div>
     </div>
 
-    <!-- 📅 メイン画面（ログイン後に表示） -->
+    <!-- 📅 メイン画面 -->
     <div id="mainSection" class="app-container hidden">
         <header class="app-header">
             <div class="welcome-area">
@@ -30,7 +29,7 @@
                 <h2 id="currentUser"></h2>
             </div>
             <div class="global-memo-wrap">
-                <textarea id="globalMemo" placeholder="自動保存"></textarea>
+                <textarea id="globalMemo" placeholder="📝 いつでも残せる自由メモ（自動保存）"></textarea>
             </div>
             <button id="logoutBtn">LOGOUT</button>
         </header>
@@ -59,20 +58,22 @@
                 <h3 id="modalDateTitle">2026 / 02 / 11</h3>
                 <span id="modalHolidayLabel" class="holiday-name"></span>
             </div>
-            <div class="modal-body-layout">
-                <div class="diary-section">
-                    <label>📖 日記題名</label>
-                    <textarea id="diaryInput" placeholder="題名を入力"></textarea>
+            
+            <!-- 🔄 ご要望の「上が題名、下が広大な日記入力欄」の大人向け配置にリニューアル -->
+            <div class="modal-body-vertical-layout">
+                <div class="diary-title-section">
+                    <label>📖 日記の題名 (15文字以内)</label>
+                    <input type="text" id="diaryInput" placeholder="今日のテーマやタイトルを入力..." maxlength="15">
                 </div>
-                <div class="todo-section">
-                    <label>📌 日記</label>
-                    <textarea id="memoInput" placeholder="日記を記入"></textarea>
+                <div class="diary-main-section">
+                    <label>📌 日記本文</label>
+                    <textarea id="memoInput" placeholder="今日あったことや感じたことを自由に記入しましょう..."></textarea>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 各JavaScriptファイルの読み込み -->
+    <!-- 各JavaScriptファイルの読み込み（分割パズル） -->
     <script src="c-s.i.js"></script>
     <script src="c-s.h.js"></script>
     <script src="c-s.r.js"></script>
