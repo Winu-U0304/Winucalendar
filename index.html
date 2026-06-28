@@ -6,9 +6,9 @@
     <title>カレンダーサイト</title>
     <link rel="stylesheet" href="c-style.css">
 </head>
-<body class="bg-theme">
+<body>
 
-    <!-- 🚪 白ベースの上品な大人向けログイン画面 -->
+    <!-- 🚪 ログイン画面 -->
     <div id="loginSection" class="login-wrapper">
         <div class="premium-login-card">
             <h1 class="login-title">🔒 DIARY SERVICE</h1>
@@ -24,33 +24,22 @@
     <!-- 📅 メイン画面 -->
     <div id="mainSection" class="app-container hidden">
         <header class="app-header">
-            <div class="welcome-area">
-                <span class="welcome-neon">WELCOME</span>
-                <h2 id="currentUser"></h2>
-            </div>
-            <div class="global-memo-wrap">
-                <textarea id="globalMemo" placeholder="📝 いつでも残せる自由メモ（自動保存）"></textarea>
-            </div>
+            <div class="welcome-area"><span class="welcome-neon">WELCOME</span><h2 id="currentUser"></h2></div>
+            <div class="global-memo-wrap"><textarea id="globalMemo" placeholder="📝 いつでも残せる自由メモ（自動保存）"></textarea></div>
             <button id="logoutBtn">LOGOUT</button>
         </header>
-
         <div class="calendar-wrapper">
             <div class="calendar-sidebar">
                 <div id="calendarMonthEnglish" class="month-eng">February</div>
                 <div id="calendarYear" class="year-num">2026</div>
                 <div id="calendarMonthNumber" class="month-big">2</div>
-                <div class="nav-buttons">
-                    <button id="prevMonthBtn">◀</button>
-                    <button id="nextMonthBtn">▶</button>
-                </div>
+                <div class="nav-buttons"><button id="prevMonthBtn">◀</button><button id="nextMonthBtn">▶</button></div>
             </div>
-            <div class="calendar-body">
-                <div class="calendar-grid" id="calendarGrid"></div>
-            </div>
+            <div class="calendar-body"><div class="calendar-grid" id="calendarGrid"></div></div>
         </div>
     </div>
 
-    <!-- 📝 画面が大きくなって開くダイナミック日記モーダル -->
+    <!-- 📝 日記モーダル -->
     <div id="memoModal" class="modal-wrapper hidden">
         <div class="modal-zoom-container">
             <div class="modal-header">
@@ -58,25 +47,68 @@
                 <h3 id="modalDateTitle">2026 / 02 / 11</h3>
                 <span id="modalHolidayLabel" class="holiday-name"></span>
             </div>
-            
-            <!-- 🔄 ご要望の「上が題名、下が広大な日記入力欄」の大人向け配置にリニューアル -->
             <div class="modal-body-vertical-layout">
-                <div class="diary-title-section">
-                    <label>📖 日記の題名 (15文字以内)</label>
-                    <input type="text" id="diaryInput" placeholder="今日のテーマやタイトルを入力..." maxlength="15">
-                </div>
-                <div class="diary-main-section">
-                    <label>📌 日記本文</label>
-                    <textarea id="memoInput" placeholder="今日あったことや感じたことを自由に記入しましょう..."></textarea>
-                </div>
+                <div class="diary-title-section"><label>📖 日記の題名 (15文字以内)</label><input type="text" id="diaryInput" placeholder="今日のテーマやタイトルを入力..." maxlength="15"></div>
+                <div class="diary-main-section"><label>📌 日記本文</label><textarea id="memoInput" placeholder="今日あったことや感じたことを自由に記入しましょう..."></textarea></div>
             </div>
         </div>
     </div>
 
-    <!-- 各JavaScriptファイルの読み込み（分割パズル） -->
-    <script src="c-s.i.js"></script>
-    <script src="c-s.h.js"></script>
-    <script src="c-s.r.js"></script>
-    <script src="c-s.m.js"></script>
+    <script>
+        const loginSection = document.getElementById("loginSection"), mainSection = document.getElementById("mainSection"), memoModal = document.getElementById("memoModal");
+        const loginKeyInput = document.getElementById("loginKey"), loginBtn = document.getElementById("loginBtn"), loginError = document.getElementById("loginError"), currentUserSpan = document.getElementById("currentUser"), logoutBtn = document.getElementById("logoutBtn");
+        const prevMonthBtn = document.getElementById("prevMonthBtn"), nextMonthBtn = document.getElementById("nextMonthBtn"), calendarMonthEnglish = document.getElementById("calendarMonthEnglish"), calendarYear = document.getElementById("calendarYear"), calendarMonthNumber = document.getElementById("calendarMonthNumber"), calendarGrid = document.getElementById("calendarGrid");
+        const modalDateTitle = document.getElementById("modalDateTitle"), modalHolidayLabel = document.getElementById("modalHolidayLabel"), diaryInput = document.getElementById("diaryInput"), memoInput = document.getElementById("memoInput"), backModalBtn = document.getElementById("backModalBtn"), globalMemo = document.getElementById("globalMemo");
+
+        let currentLogedInUser = "", userNotesData = { diary: {}, todo: {}, global: "" }, targetCurrentDate = new Date(), selectedDateKey = "";
+        const ENGLISH_MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+        function checkHoliday(y, m, d) {
+            const mm = m + 1, w = new Date(y, m, d).getDay(), n = Math.floor((d - 1) / 7) + 1;
+            if (mm === 1 && d === 1) return "元日"; if (mm === 1 && n === 2 && w === 1) return "成人の日"; if (mm === 2 && d === 11) return "建国記念の日"; if (mm === 2 && d === 23) return "天皇誕生日"; if (mm === 4 && d === 29) return "昭和の日"; if (mm === 5 && d === 3) return "憲法記念日"; if (mm === 5 && d === 4) return "みどりの日"; if (mm === 5 && d === 5) return "こどもの日"; if (mm === 7 && n === 3 && w === 1) return "海の日"; if (mm === 8 && d === 11) return "山の日"; if (mm === 9 && n === 3 && w === 1) return "敬老の日"; if (mm === 10 && n === 2 && w === 1) return "スポーツの日"; if (mm === 11 && d === 3) return "文化の日"; if (mm === 11 && d === 23) return "勤労感謝の日";
+            if (mm === 3 && d === Math.floor(20.8431 + 0.242194 * (y - 1980) - Math.floor((y - 1980) / 4))) return "春分の日";
+            if (mm === 9 && d === Math.floor(23.2488 + 0.242194 * (y - 1980) - Math.floor((y - 1980) / 4))) return "秋分の日";
+            if (w === 1 && checkHoliday(y, m, d - 1)) return "振替休日"; return null;
+        }
+
+        function renderCalendarGrid() {
+            calendarGrid.innerHTML = ""; const y = targetCurrentDate.getFullYear(), m = targetCurrentDate.getMonth();
+            calendarYear.textContent = y; calendarMonthEnglish.textContent = ENGLISH_MONTHS[m]; calendarMonthNumber.textContent = m + 1;
+            WEEKDAYS.forEach((day, idx) => { const h = document.createElement("div"); h.className = "day-header" + (idx===0?" sun":idx===6?" sat":""); h.textContent = day; calendarGrid.appendChild(h); });
+            const firstIdx = new Date(y, m, 1).getDay(), totalDays = new Date(y, m + 1, 0).getDate();
+            for (let i = 0; i < firstIdx; i++) calendarGrid.appendChild(document.createElement("div"));
+            for (let d = 1; d <= totalDays; d++) {
+                const cell = document.createElement("div"), w = new Date(y, m, d).getDay(); cell.className = "day-cell" + (w===0?" sun":w===6?" sat":"");
+                const hName = checkHoliday(y, m, d); if (hName) cell.classList.add("holiday");
+                if (d === new Date().getDate() && m === new Date().getMonth() && y === new Date().getFullYear()) cell.classList.add("today");
+                const num = document.createElement("div"); num.className = "day-number"; num.textContent = d; cell.appendChild(num);
+                if (hName) { const hEl = document.createElement("div"); hEl.className = "cell-holiday-name"; hEl.textContent = hName; cell.appendChild(hEl); }
+                const k = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                if (userNotesData.diary && userNotesData.diary[k]) { const p = document.createElement("div"); p.className = "cell-diary-preview"; p.textContent = userNotesData.diary[k].replace(/\n/g, " "); cell.appendChild(p); }
+                cell.addEventListener("click", () => {
+                    selectedDateKey = k; modalDateTitle.textContent = `${y} / ${String(m+1).padStart(2,'0')} / ${String(d).padStart(2,'0')}`;
+                    modalHolidayLabel.textContent = hName || ""; modalHolidayLabel.classList.toggle("hidden", !hName);
+                    diaryInput.value = userNotesData.diary[k] || ""; memoInput.value = userNotesData.todo[k] || ""; memoModal.classList.remove("hidden");
+                });
+                calendarGrid.appendChild(cell);
+            }
+        }
+
+        loginBtn.addEventListener("click", () => {
+            const key = loginKeyInput.value.trim(); if (!key) { loginError.textContent = "専用キーを入力してください。"; return; }
+            currentLogedInUser = key; currentUserSpan.textContent = key; localStorage.setItem("cal_auto_login_key", key);
+            const saved = localStorage.getItem(`cal_premium_${currentLogedInUser}`); userNotesData = saved ? JSON.parse(saved) : { diary: {}, todo: {}, global: "" };
+            globalMemo.value = userNotesData.global || ""; loginSection.classList.add("hidden"); mainSection.classList.remove("hidden"); targetCurrentDate = new Date(); renderCalendarGrid();
+        });
+
+        window.addEventListener("load", () => { setTimeout(() => { const autoKey = localStorage.getItem("cal_auto_login_key"); if (autoKey && loginKeyInput && loginBtn) { loginKeyInput.value = autoKey; loginBtn.click(); } }, 150); });
+        logoutBtn.addEventListener("click", () => { localStorage.removeItem("cal_auto_login_key"); currentLogedInUser = ""; userNotesData = { diary: {}, todo: {}, global: "" }; loginKeyInput.value = ""; globalMemo.value = ""; mainSection.classList.add("hidden"); loginSection.classList.remove("hidden"); });
+        prevMonthBtn.addEventListener("click", () => { targetCurrentDate.setMonth(targetCurrentDate.getMonth() - 1); renderCalendarGrid(); });
+        nextMonthBtn.addEventListener("click", () => { targetCurrentDate.setMonth(targetCurrentDate.getMonth() + 1); renderCalendarGrid(); });
+        diaryInput.addEventListener("input", () => { if (!selectedDateKey) return; userNotesData.diary[selectedDateKey] = diaryInput.value; localStorage.setItem(`cal_premium_${currentLogedInUser}`, JSON.stringify(userNotesData)); });
+        memoInput.addEventListener("input", () => { if (!selectedDateKey) return; userNotesData.todo[selectedDateKey] = memoInput.value; localStorage.setItem(`cal_premium_${currentLogedInUser}`, JSON.stringify(userNotesData)); });
+        globalMemo.addEventListener("input", () => { userNotesData.global = globalMemo.value; localStorage.setItem(`cal_premium_${currentLogedInUser}`, JSON.stringify(userNotesData)); });
+        backModalBtn.addEventListener("click", () => { memoModal.classList.add("hidden"); renderCalendarGrid(); });
+    </script>
 </body>
 </html>
