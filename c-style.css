@@ -1,23 +1,22 @@
 /* 1. 基本＆テーマ設定 */
-:root { --neon-color: #00f3ff; --neon-pink: #ff007f; }
-body, html { margin: 0; padding: 0; font-family: 'Georgia', serif; box-sizing: border-box; background: #ffffff; color: #1a202c; }
+body, html { margin: 0; padding: 0; font-family: 'Georgia', serif; box-sizing: border-box; background: #f8f9fa; color: #1a202c; }
 .hidden { display: none !important; }
 
-/* 2. 🚪 全面的ネオン風ログイン画面 */
-.login-wrapper { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0a0a12; display: flex; justify-content: center; align-items: center; z-index: 1000; }
-.neon-card { background: rgba(255,255,255,0.03); padding: 40px; border-radius: 20px; border: 1px solid rgba(0,243,255,0.2); box-shadow: 0 0 30px rgba(0,243,255,0.1); text-align: center; max-width: 450px; width: 90%; }
-.neon-text { font-size: 32px; color: #fff; text-shadow: 0 0 10px var(--neon-color), 0 0 20px var(--neon-color); font-family: sans-serif; letter-spacing: 4px; margin-bottom: 5px; }
-.neon-sub { color: #8892b0; font-size: 13px; margin-bottom: 25px; font-family: sans-serif; }
-.login-box { display: flex; gap: 10px; }
-.login-box input { flex-grow: 1; padding: 14px; background: rgba(0,0,0,0.5); border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 16px; outline: none; transition: 0.3s; }
-.login-box input:focus { border-color: var(--neon-color); box-shadow: 0 0 15px rgba(0,243,255,0.4); }
-.login-box button { padding: 14px 24px; border: none; border-radius: 8px; background: transparent; color: var(--neon-color); border: 1px solid var(--neon-color); font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 0 10px rgba(0,243,255,0.2); }
-.login-box button:hover { background: var(--neon-color); color: #000; box-shadow: 0 0 25px var(--neon-color); }
-.error-msg { color: var(--neon-pink); font-size: 13px; margin-top: 15px; font-weight: bold; }
+/* 2. 🚪 上品で明るい白ベースのログイン画面 */
+.login-wrapper { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; z-index: 1000; background: #f0f2f5; }
+.premium-login-card { background: #ffffff; padding: 45px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; max-width: 500px; width: 90%; border: 1px solid #e2e8f0; }
+.login-title { font-size: 24px; color: #1a202c; font-family: sans-serif; font-weight: bold; letter-spacing: 1px; margin-bottom: 10px; }
+.login-sub-text { color: #4a5568; font-size: 14px; line-height: 1.6; margin-bottom: 30px; font-family: sans-serif; }
+.login-box { display: flex; gap: 12px; }
+.login-box input { flex-grow: 1; padding: 14px; background: #f7fafc; border: 2px solid #e2e8f0; border-radius: 8px; color: #1a202c; font-size: 15px; outline: none; transition: 0.2s; }
+.login-box input:focus { border-color: #000000; background: #fff; }
+.login-box button { padding: 14px 28px; border: none; border-radius: 8px; background: #000000; color: #ffffff; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 15px; }
+.login-box button:hover { background: #333333; }
+.error-msg { color: #ff007f; font-size: 13px; margin-top: 15px; font-weight: bold; font-family: sans-serif; }
 
 /* 3. 📅 メインダッシュボード＆ヘッダー */
 .app-container { padding: 20px; max-width: 1200px; margin: 0 auto; }
-.app-header { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 25px; border: 1px solid #eee; }
+.app-header { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); margin-bottom: 25px; border: 1px solid #eee; }
 .welcome-neon { font-size: 11px; background: #000; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: bold; letter-spacing: 1px; display: inline-block; margin-bottom: 2px; }
 .welcome-area h2 { margin: 0; font-size: 22px; color: #111; }
 .global-memo-wrap { flex-grow: 1; max-width: 500px; margin: 0 20px; }
@@ -33,7 +32,7 @@ body, html { margin: 0; padding: 0; font-family: 'Georgia', serif; box-sizing: b
 .year-num { font-size: 16px; color: #718096; margin-top: -2px; font-family: sans-serif; }
 .month-big { font-size: 80px; font-weight: 900; color: #000; line-height: 1; margin: 10px 0; }
 .nav-buttons { display: flex; gap: 8px; }
-.nav-buttons button { background: #fff; border: 1px solid #e2e8f0; color: #000; width: 40px; height: 40px; border-radius: 50%; font-size: 16px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.nav-buttons button { background: #fff; border: 1px solid #e2e8f0; color: #000; width: 40px; height: 40px; border-radius: 50%; font-size: 16px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
 .nav-buttons button:hover { background: #000; color: #fff; border-color: #000; }
 
 /* 5. カレンダーマス目のデコレーション */
@@ -42,26 +41,31 @@ body, html { margin: 0; padding: 0; font-family: 'Georgia', serif; box-sizing: b
 .day-header { font-weight: bold; text-align: center; padding: 10px 0; font-size: 14px; color: #4a5568; border-bottom: 2px solid #000; text-transform: capitalize; }
 .day-header.sun { color: #e53e3e; }
 .day-header.sat { color: #3182ce; }
-.day-cell { padding: 15px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); min-height: 105px; cursor: pointer; display: flex; flex-direction: column; border: 1px solid rgba(0,0,0,0.02); transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); background: #ffffff; }
-.day-cell:hover { transform: translateY(-4px); box-shadow: 0 12px 20px rgba(0,0,0,0.08); border-color: #cbd5e0; }
+.day-cell { padding: 15px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); min-height: 105px; cursor: pointer; display: flex; flex-direction: column; border: 1px solid #e2e8f0; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); background: #ffffff; }
+.day-cell:hover { transform: translateY(-4px); box-shadow: 0 12px 20px rgba(0,0,0,0.06); border-color: #cbd5e0; }
 .day-number { font-size: 20px; font-weight: bold; color: #2d3748; }
 .day-cell.sun .day-number, .day-cell.holiday .day-number { color: #e53e3e; }
 .day-cell.sat .day-number { color: #3182ce; }
 .cell-holiday-name { font-size: 10px; color: #e53e3e; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
-.day-cell.today { border: 2px solid #000; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+.day-cell.today { border: 2px solid #000; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
 .cell-diary-preview { font-size: 11px; color: #4a5568; margin-top: auto; background: #f7fafc; padding: 3px 6px; border-radius: 6px; border-left: 3px solid #cbd5e0; font-family: sans-serif; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* 6. 📝 モーダル（アニメーション付き大画面日記） */
+/* 6. 📝 縦型日記モーダルの装飾 */
 .modal-wrapper { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(255,255,255,0.98); display: flex; justify-content: center; align-items: center; z-index: 2000; animation: zoomIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
 @keyframes zoomIn { from { transform: scale(0.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-.modal-zoom-container { max-width: 900px; width: 95%; height: 85vh; display: flex; flex-direction: column; background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
-.modal-header { display: flex; align-items: center; gap: 20px; border-bottom: 2px solid #1a202c; padding-bottom: 15px; margin-bottom: 25px; }
+.modal-zoom-container { max-width: 800px; width: 95%; height: 85vh; display: flex; flex-direction: column; background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+.modal-header { display: flex; align-items: center; gap: 20px; border-bottom: 2px solid #1a202c; padding-bottom: 15px; margin-bottom: 20px; }
 .back-btn { background: #000; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; }
 .back-btn:hover { background: #333; }
-.modal-header h3 { margin: 0; font-size: 28px; font-weight: bold; }
+.modal-header h3 { margin: 0; font-size: 26px; font-weight: bold; }
 .holiday-name { background: #fff5f5; color: #e53e3e; padding: 4px 10px; border-radius: 6px; font-size: 13px; font-weight: bold; }
-.modal-body-layout { display: flex; gap: 25px; flex-grow: 1; height: calc(100% - 80px); }
-.diary-section, .todo-section { display: flex; flex-direction: column; flex: 1; }
-.modal-body-layout label { font-weight: bold; font-size: 15px; color: #1a202c; margin-bottom: 8px; display: flex; align-items: center; }
-.modal-body-layout textarea { width: 100%; flex-grow: 1; padding: 15px; border: 1px solid #cbd5e0; border-radius: 12px; font-size: 16px; line-height: 1.8; resize: none; outline: none; background: #fbfbfb; box-sizing: border-box; transition: border 0.2s; }
-.modal-body-layout textarea:focus { border-color: #000; background: #fff; }
+
+/* 上下に並べるレイアウト */
+.modal-body-vertical-layout { display: flex; flex-direction: column; gap: 20px; flex-grow: 1; height: calc(100% - 70px); }
+.diary-title-section, .diary-main-section { display: flex; flex-direction: column; }
+.diary-main-section { flex-grow: 1; }
+.modal-body-vertical-layout label { font-weight: bold; font-size: 14px; color: #1a202c; margin-bottom: 6px; }
+.modal-body-vertical-layout input[type=text] { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; font-weight: bold; outline: none; background: #fbfbfb; box-sizing: border-box; }
+.modal-body-vertical-layout input[type=text]:focus { border-color: #000; background: #fff; }
+.modal-body-vertical-layout textarea { width: 100%; flex-grow: 1; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 16px; line-height: 1.8; resize: none; outline: none; background: #fbfbfb; box-sizing: border-box; }
+.modal-body-vertical-layout textarea:focus { border-color: #000; background: #fff; }
