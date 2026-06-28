@@ -12,7 +12,7 @@
     <div id="loginSection" class="login-wrapper">
         <div class="premium-login-card">
             <h1 class="login-title">🔒 DIARY SERVICE</h1>
-            <p class="login-sub-text">クラウド暗号化ファイルにアクセスするため、専用の認証キーを入力してください。</p>
+            <p class="login-sub-text">クラウド暗号化ファイルにアクセスするため、専用 of 認証キーを入力してください。</p>
             <div class="login-box">
                 <input type="password" id="loginKey" placeholder="固有の認証キー（パスワード）を入力...">
                 <button id="loginBtn">ログイン</button>
@@ -59,21 +59,21 @@
                 <span id="modalHolidayLabel" class="holiday-name"></span>
             </div>
             
-            <!-- 🔄 ご要望の「上が題名、下が広大な日記入力欄」の大人向け配置にリニューアル -->
+            <!-- 🔄 上がタイトル(7文字以下制限)、下が本文のスマートな縦並び配置 -->
             <div class="modal-body-vertical-layout">
                 <div class="diary-title-section">
-                    <label>📖 日記の題名 (15文字以内)</label>
-                    <input type="text" id="diaryInput" placeholder="今日のテーマやタイトルを入力..." maxlength="15">
+                    <label>📖 日記のタイトル (7文字以下)</label>
+                    <input type="text" id="diaryInput" placeholder="タイトルを入力（7文字まで）..." maxlength="7">
                 </div>
                 <div class="diary-main-section">
                     <label>📌 日記本文</label>
-                    <textarea id="memoInput" placeholder="今日あったことや感じたことを自由に記入しましょう..."></textarea>
+                    <textarea id="memoInput" placeholder="今日の日記を記入..."></textarea>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 各JavaScriptファイルの読み込み（分割パズル） -->
+    <!-- 分割パズル形式で順番に読み込む -->
     <script src="c-s.i.js"></script>
     <script src="c-s.h.js"></script>
     <script src="c-s.r.js"></script>
