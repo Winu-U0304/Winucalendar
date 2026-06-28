@@ -3,54 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ログイン式スケジュールカレンダー</title>
-    <!-- デザイン用の外部CSS -->
-    <link rel="stylesheet" href="style.css">
+    <title>プレミアム・フォトカレンダー</title>
+    <!-- 🔄 ここを c-style.css に変更しました -->
+    <link rel="stylesheet" href="c-style.css">
 </head>
-<body>
+<body class="bg-theme">
 
-    <!-- 🚪 ログイン画面（最初はこれが表示される） -->
-    <div id="loginSection" class="card">
-        <h1>カレンダーメモにログイン</h1>
-        <p>あなた専用のログインキー（パスワード）を入力してください。※初めての方は好きな文字を入力すると新規登録されます。</p>
-        <div class="login-form">
-            <input type="password" id="loginKey" placeholder="ログインキーを入力...">
-            <button id="loginBtn">ログイン</button>
+    <!-- 🚪 全面的ネオン風ログイン画面 -->
+    <div id="loginSection" class="login-wrapper">
+        <div class="neon-card">
+            <h1 class="neon-text">DIARY LOGIN</h1>
+            <p class="neon-sub">パスワードを入力して暗号化ファイルを開きます</p>
+            <div class="login-box">
+                <input type="password" id="loginKey" placeholder="ログインコードを入力">
+                <button id="loginBtn">ENTER</button>
+            </div>
+            <p id="loginError" class="error-msg"></p>
         </div>
-        <p id="loginError" class="error-text"></p>
     </div>
 
-    <!-- 📅 メイン画面（ログイン成功後に表示される） -->
-    <div id="mainSection" class="card hidden">
-        <div class="header-bar">
-            <h2>ユーザー: <span id="currentUser"></span> のカレンダー</h2>
-            <button id="logoutBtn">ログアウト</button>
-        </div>
+    <!-- 📅 メイン画面（ログイン後に表示） -->
+    <div id="mainSection" class="app-container hidden">
+        <!-- プレミアムヘッダー -->
+        <header class="app-header">
+            <div class="welcome-area">
+                <span class="welcome-neon">WELCOME</span>
+                <h2 id="currentUser"></h2>
+            </div>
+            <!-- 日付関係なく入力できる全体自由メモ -->
+            <div class="global-memo-wrap">
+                <textarea id="globalMemo" placeholder="📝自動保存"></textarea>
+            </div>
+            <button id="logoutBtn">LOGOUT</button>
+        </header>
 
-        <!-- カレンダーの月切り替え用 -->
-        <div class="calendar-nav">
-            <button id="prevMonthBtn">◀ 前の月</button>
-            <h3 id="calendarTitle">2026年 6月</h3>
-            <button id="nextMonthBtn">次の月 ▶</button>
-        </div>
+        <!-- カレンダーコントロール（画像のようなシンプルな配置へ） -->
+        <div class="calendar-wrapper">
+            <div class="calendar-sidebar">
+                <div id="calendarMonthEnglish" class="month-eng">February</div>
+                <div id="calendarYear" class="year-num">2026</div>
+                <div id="calendarMonthNumber" class="month-big">2</div>
+                <div class="nav-buttons">
+                    <button id="prevMonthBtn">◀</button>
+                    <button id="nextMonthBtn">▶</button>
+                </div>
+            </div>
 
-        <!-- カレンダー本体（曜日と日付が並ぶ場所） -->
-        <div class="calendar-grid" id="calendarGrid"></div>
-    </div>
-
-    <!-- 📝 メモ入力用ポップアップ（日付をクリックしたときに出る） -->
-    <div id="memoModal" class="modal hidden">
-        <div class="modal-content">
-            <h3 id="modalDateTitle">2026年06月01日のメモ</h3>
-            <textarea id="memoInput" placeholder="ここに予定やメモを記入（自動保存されます）..."></textarea>
-            <div class="modal-buttons">
-                <button id="closeModalBtn">閉じる</button>
+            <!-- カレンダー本体のグリッド -->
+            <div class="calendar-body">
+                <div class="calendar-grid" id="calendarGrid"></div>
             </div>
         </div>
     </div>
 
-    <!-- 分割したプログラム(JavaScript)を順番に読み込む -->
+    <!-- 📝 画面が大きくなって開くダイナミック日記モーダル -->
+    <div id="memoModal" class="modal-wrapper hidden">
+        <div class="modal-zoom-container">
+            <div class="modal-header">
+                <button id="backModalBtn" class="back-btn">◀ 戻る</button>
+                <h3 id="modalDateTitle">2026 / 02 / 11</h3>
+                <span id="modalHolidayLabel" class="holiday-name"></span>
+            </div>
+            <div class="modal-body-layout">
+                <div class="diary-section">
+                    <label>📖 本日の日記</label>
+                    <textarea id="diaryInput" placeholder="今日あったことや感じたことを自由に記録しましょう..."></textarea>
+                </div>
+                <div class="todo-section">
+                    <label>📌 タスク・メモ</label>
+                    <textarea id="memoInput" placeholder="やることリストや簡単なメモなど..."></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- パズル形式のJavaScriptファイルを分割読み込み -->
     <script src="c-s.i.js"></script>
+    <script src="c-s.h.js"></script>
     <script src="c-s.r.js"></script>
     <script src="c-s.m.js"></script>
 </body>
