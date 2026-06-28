@@ -54,7 +54,7 @@ function renderCalendarGrid() {
 
         const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         
-        // 🔄 マス目の中には「日記の題名」だけを改行なしでスマートに表示する
+        // 🔄 マス目の中には「7文字制限の日記タイトル」を改行なしで綺麗に表示
         if (userNotesData.diary && userNotesData.diary[dateKey]) {
             const previewEl = document.createElement("div");
             previewEl.className = "cell-diary-preview";
