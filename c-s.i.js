@@ -25,19 +25,12 @@ const globalMemo = document.getElementById("globalMemo");
 
 // --- 2. カレンダーとデータの状態管理 ---
 let currentLogedInUser = "";         // ログイン中のユーザー名
-let userNotesData = {                 // ユーザーの日記・メモ・全体メモをまとめて保存する構造
-    diary: {},   // 日付ごとの日記データ
-    todo: {},    // 日付ごとのToDoデータ
-    global: ""   // 日付関係ない全体メモ
-};
+let userNotesData = { diary: {}, todo: {}, global: "" }; // メモ構造
 let targetCurrentDate = new Date();  // 現在表示しているカレンダーの年月
-let selectedDateKey = "";            // ポップアップで開いている日付のキー (例: "2026-06-28")
+let selectedDateKey = "";            // 開いている日付のキー
 
-// 英語の月名の配列（デザイン画像に合わせる用）
+// 英語の月名の配列
 const ENGLISH_MONTHS = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
 ];
-
-// 曜日の英語表記（デザイン用）
-const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
