@@ -3,78 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>カレンダーサイト</title>
+    <title>プレミアム手帳＆メモ</title>
     <link rel="stylesheet" href="c-style.css">
-    <link rel="icon" href="calendar.png">
 </head>
 <body class="bg-theme">
-
-    <!-- 🚪 白ベースの上品な大人向けログイン画面 -->
+    <!-- 🚪 ログイン画面 -->
     <div id="loginSection" class="login-wrapper">
         <div class="premium-login-card">
-            <h1 class="login-title">🔒 DIARY SERVICE</h1>
-            <p class="login-sub-text">クラウド暗号化ファイルにアクセスするため、専用 of 認証キーを入力してください。</p>
-            <div class="login-box">
-                <input type="password" id="loginKey" placeholder="固有の認証キー（パスワード）を入力...">
-                <button id="loginBtn">ログイン</button>
-            </div>
+            <h1 class="login-title">🔒 DIARY & NOTES</h1>
+            <p class="login-sub-text">クラウド暗号化ファイルにアクセスするため、専用の認証キーを入力してください。</p>
+            <div class="login-box"><input type="password" id="loginKey" placeholder="固有の認証キーを入力..."><button id="loginBtn">ログイン</button></div>
             <p id="loginError" class="error-msg"></p>
         </div>
     </div>
 
-    <!-- 📅 メイン画面 -->
+    <!-- 📅 📱 メイン画面（タブ切り替え＆スライド構造） -->
     <div id="mainSection" class="app-container hidden">
         <header class="app-header">
-            <div class="welcome-area">
-                <span class="welcome-neon">WELCOME</span>
-                <h2 id="currentUser"></h2>
-            </div>
-            <div class="global-memo-wrap">
-                <textarea id="globalMemo" placeholder="📝 いつでも残せる自由メモ（自動保存）"></textarea>
+            <div class="welcome-area"><span class="welcome-neon">WELCOME</span><h2 id="currentUser"></h2></div>
+            <!-- 🎛️ 高級感のあるタブ切り替えボタン -->
+            <div class="tab-switcher">
+                <button id="tabCalendarBtn" class="tab-btn active">カレンダー</button>
+                <button id="tabNotesBtn" class="tab-btn">メモ帳</button>
             </div>
             <button id="logoutBtn">LOGOUT</button>
         </header>
 
-        <div class="calendar-wrapper">
-            <div class="calendar-sidebar">
-                <div id="calendarMonthEnglish" class="month-eng">February</div>
-                <div id="calendarYear" class="year-num">2026</div>
-                <div id="calendarMonthNumber" class="month-big">2</div>
-                <div class="nav-buttons">
-                    <button id="prevMonthBtn">◀</button>
-                    <button id="nextMonthBtn">▶</button>
+        <!-- 🔄 左右滑らかスライド用コンテナ -->
+        <div class="slide-viewport">
+            <div class="slide-container" id="slideContainer">
+                
+                <!-- 【ページ1】📅 カレンダーエリア -->
+                <div class="slide-page" id="pageCalendar">
+                    <div class="calendar-wrapper">
+                        <div class="calendar-sidebar">
+                            <div id="calendarMonthEnglish" class="month-eng">February</div>
+                            <div id="calendarYear" class="year-num">2026</div>
+                            <div id="calendarMonthNumber" class="month-big">2</div>
+                            <div class="nav-buttons"><button id="prevMonthBtn">◀</button><button id="nextMonthBtn">▶</button></div>
+                        </div>
+                        <div class="calendar-body"><div class="calendar-grid" id="calendarGrid"></div></div>
+                    </div>
                 </div>
-            </div>
-            <div class="calendar-body">
-                <div class="calendar-grid" id="calendarGrid"></div>
+
+                <!-- 【ページ2】📱 iPhone風本格メモ帳エリア -->
+                <div class="slide-page" id="pageNotes">
+                    <div class="notes-app-wrapper">
+                        <!-- 📂 左側：フォルダ階層 -->
+                        <div class="notes-sidebar" id="notesSidebar">
+                            <div class="sidebar-header"><h3>フォルダ</h3><button id="addFolderBtn" class="icon-btn">➕</button></div>
+                            <div class="folder-list" id="folderList"></div>
+                        </div>
+                        <!-- 📝 中央：メモ一覧 -->
+                        <div class="notes-list-pane" id="notesListPane">
+                            <div class="pane-header"><button id="backToFoldersBtn" class="mobile-only-btn">◀ フォルダ</button><h3 id="currentFolderName">すべてのメモ</h3><button id="addNoteBtn" class="icon-btn">📝</button></div>
+                            <div class="note-list" id="noteList"></div>
+                        </div>
+                        <!-- 📖 右側：エディタ本体 -->
+                        <div class="notes-editor-pane" id="notesEditorPane">
+                            <div class="pane-header"><button id="backToNotesListBtn" class="mobile-only-btn">◀ 一覧</button><span id="noteSavedStatus" class="saved-status">自動保存済</span></div>
+                            <div class="editor-body">
+                                <input type="text" id="noteTitleInput" placeholder="タイトルなし" class="note-title-field">
+                                <textarea id="noteBodyInput" placeholder="ここにメモを入力..." class="note-body-field"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 
-    <!-- 📝 画面が大きくなって開くダイナミック日記モーダル -->
+    <!-- 日記モーダル -->
     <div id="memoModal" class="modal-wrapper hidden">
         <div class="modal-zoom-container">
-            <div class="modal-header">
-                <button id="backModalBtn" class="back-btn">◀ 戻る</button>
-                <h3 id="modalDateTitle">2026 / 02 / 11</h3>
-                <span id="modalHolidayLabel" class="holiday-name"></span>
-            </div>
-            
-            <!-- 🔄 上がタイトル(7文字以下制限)、下が本文のスマートな縦並び配置 -->
+            <div class="modal-header"><button id="backModalBtn" class="back-btn">◀ 戻る</button><h3 id="modalDateTitle">2026 / 02 / 11</h3><span id="modalHolidayLabel" class="holiday-name"></span></div>
             <div class="modal-body-vertical-layout">
-                <div class="diary-title-section">
-                    <label>📖 日記のタイトル (7文字以下)</label>
-                    <input type="text" id="diaryInput" placeholder="タイトルを入力（7文字まで）..." maxlength="7">
-                </div>
-                <div class="diary-main-section">
-                    <label>📌 日記本文</label>
-                    <textarea id="memoInput" placeholder="今日の日記を記入..."></textarea>
-                </div>
+                <div class="diary-title-section"><label>📖 日記のタイトル (7文字以下)</label><input type="text" id="diaryInput" placeholder="タイトルを入力（7文字まで）..." maxlength="7"></div>
+                <div class="diary-main-section"><label>📌 日記本文</label><textarea id="memoInput" placeholder="今日の日記を記入..."></textarea></div>
             </div>
         </div>
     </div>
 
-    <!-- 分割パズル形式で順番に読み込む -->
     <script src="c-s.i.js"></script>
     <script src="c-s.h.js"></script>
     <script src="c-s.r.js"></script>
