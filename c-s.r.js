@@ -12,7 +12,7 @@ function renderCalendarGrid() {
     // 📱 スマホの時は曜日を3文字に切り替える
     let currentWeekdays = [...WEEKDAYS];
     if (window.innerWidth <= 768) {
-        currentWeekdays = ["　Sun　", "　Mon　", "　Tue　", "　Wed　", "　Thu　", "　Fri　", "　Sat　"];
+        currentWeekdays = ["　　Sun　　", "　　Mon　　", "　　Tue　　", "　　Wed　　", "　　Thu　　", "　　Fri　　", "　　Sat　　"];
     }
 
     currentWeekdays.forEach((day, index) => {
