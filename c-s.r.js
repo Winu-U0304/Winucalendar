@@ -1,3 +1,4 @@
+// 曜日定義（PCはフルスペル、スマホは自動判別されるのでベースはこれでOK）
 const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 function renderCalendarGrid() {
@@ -8,7 +9,13 @@ function renderCalendarGrid() {
     calendarMonthEnglish.textContent = ENGLISH_MONTHS[month];
     calendarMonthNumber.textContent = month + 1;
 
-    WEEKDAYS.forEach((day, index) => {
+    // 📱 スマホの時は曜日を3文字に切り替える
+    let currentWeekdays = [...WEEKDAYS];
+    if (window.innerWidth <= 768) {
+        currentWeekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    }
+
+    currentWeekdays.forEach((day, index) => {
         const headerEl = document.createElement("div");
         headerEl.className = "day-header";
         if (index === 0) headerEl.classList.add("sun");
@@ -54,13 +61,24 @@ function renderCalendarGrid() {
 
         const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         
-        // 🔄 マス目の中には「7文字制限の日記タイトル」を改行なしで綺麗に表示
+        // 🔄 日記のタイトル表示（スマホ判別を入れて修正！）
         if (userNotesData.diary && userNotesData.diary[dateKey]) {
-            const previewEl = document.createElement("div");
-            previewEl.className = "cell-diary-preview";
-            const cleanText = userNotesData.diary[dateKey].replace(/\n/g, " ");
-            previewEl.textContent = cleanText;
-            cell.appendChild(previewEl);
+            // ⭐【ここを修正】画面の横幅が768pxより大きい（＝パソコン）時だけ、タイトルを表示する
+            if (window.innerWidth > 768) {
+                const previewEl = document.createElement("div");
+                previewEl.className = "cell-diary-preview";
+                
+                // 改行をスペースに変換
+                let cleanText = userNotesData.diary[dateKey].replace(/\n/g, " ");
+                
+                // パソコン時はMAX7文字でそのまま表示（念のため超過分は切り捨て）
+                if (cleanText.length > 7) {
+                    cleanText = cleanText.substring(0, 7) + "…";
+                }
+                
+                previewEl.textContent = cleanText;
+                cell.appendChild(previewEl);
+            }
         }
 
         cell.addEventListener("click", () => {
@@ -69,7 +87,6 @@ function renderCalendarGrid() {
             modalHolidayLabel.textContent = holidayName || "";
             modalHolidayLabel.classList.toggle("hidden", !holidayName);
 
-            // 題名(diary)と本文(todo)をそれぞれの入力欄へセット
             diaryInput.value = (userNotesData.diary && userNotesData.diary[dateKey]) || "";
             memoInput.value = (userNotesData.todo && userNotesData.todo[dateKey]) || "";
             memoModal.classList.remove("hidden");
