@@ -11,12 +11,12 @@ function renderCalendarGrid() {
 
     let currentWeekdays = [...WEEKDAYS];
     if (window.innerWidth <= 768) {
-        currentWeekdays = ["　　Sun　　", "　　Mon　　", "　　Tue　　", "　　Wed　　", "　　Thu　　", "　　Fri　　", "　　Sat　　"];
+        currentWeekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     }
 
     currentWeekdays.forEach((day, index) => {
         const headerEl = document.createElement("div");
-        headerEl.className = "day-header";
+        headerEl.className = `day-header`;
         if (index === 0) headerEl.classList.add("sun");
         if (index === 6) headerEl.classList.add("sat");
         headerEl.textContent = day;
@@ -85,7 +85,7 @@ function renderCalendarGrid() {
     }
 }
 
-// --- 📂 📱 iPhone風メモ帳：フォルダリストの描画 ---
+// --- 📂 iPhone風メモ帳：フォルダリストの描画 ---
 function renderFolders() {
     folderList.innerHTML = "";
     userNotesData.folders.forEach(folder => {
@@ -96,7 +96,6 @@ function renderFolders() {
         nameSpan.textContent = `📁 ${folder.name}`;
         item.appendChild(nameSpan);
 
-        // 初期フォルダ以外は削除ボタンを表示
         if (folder.id !== "f_default") {
             const delBtn = document.createElement("button");
             delBtn.className = "delete-btn";
@@ -123,15 +122,13 @@ function renderFolders() {
     });
 }
 
-// --- 📝 📱 iPhone風メモ帳：メモ一覧リストの描画 ---
+// --- 📝 iPhone風メモ帳：メモ一覧リストの描画 ---
 function renderNotesList() {
     noteList.innerHTML = "";
     const activeFolder = userNotesData.folders.find(f => f.id === currentFolderId);
     if (!activeFolder) return;
 
     currentFolderName.textContent = activeFolder.name;
-
-    // 更新日時が新しい順に並び替え
     activeFolder.notes.sort((a, b) => b.updated - a.updated);
 
     activeFolder.notes.forEach(note => {
@@ -174,7 +171,7 @@ function renderNotesList() {
     });
 }
 
-// --- 📖 📱 iPhone風メモ帳：現在選択中のメモを右側エディタにロード ---
+// --- 📖 iPhone風メモ帳：現在選択中のメモをロード ---
 function loadCurrentNote() {
     const activeFolder = userNotesData.folders.find(f => f.id === currentFolderId);
     if (!activeFolder || !currentNoteId) {
