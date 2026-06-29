@@ -1,6 +1,6 @@
-// 曜日定義（PCはフルスペル、スマホは自動判別されるのでベースはこれでOK）
 const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
+// --- 📅 カレンダーのマス目を動的に描画 ---
 function renderCalendarGrid() {
     calendarGrid.innerHTML = "";
     const year = targetCurrentDate.getFullYear();
@@ -9,10 +9,9 @@ function renderCalendarGrid() {
     calendarMonthEnglish.textContent = ENGLISH_MONTHS[month];
     calendarMonthNumber.textContent = month + 1;
 
-    // 📱 スマホの時は曜日を3文字に切り替える
     let currentWeekdays = [...WEEKDAYS];
     if (window.innerWidth <= 768) {
-        currentWeekdays = ["　　Sun　　", "　　Mon　　", "　　Tue　　", "　　Wed　　", "　　Thu　　", "　　Fri　　", "　　Sat　　"];
+        currentWeekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     }
 
     currentWeekdays.forEach((day, index) => {
@@ -61,21 +60,12 @@ function renderCalendarGrid() {
 
         const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         
-        // 🔄 日記のタイトル表示（スマホ判別を入れて修正！）
         if (userNotesData.diary && userNotesData.diary[dateKey]) {
-            // ⭐【ここを修正】画面の横幅が768pxより大きい（＝パソコン）時だけ、タイトルを表示する
             if (window.innerWidth > 768) {
                 const previewEl = document.createElement("div");
                 previewEl.className = "cell-diary-preview";
-                
-                // 改行をスペースに変換
                 let cleanText = userNotesData.diary[dateKey].replace(/\n/g, " ");
-                
-                // パソコン時はMAX7文字でそのまま表示（念のため超過分は切り捨て）
-                if (cleanText.length > 7) {
-                    cleanText = cleanText.substring(0, 7) + "…";
-                }
-                
+                if (cleanText.length > 7) { cleanText = cleanText.substring(0, 7) + "…"; }
                 previewEl.textContent = cleanText;
                 cell.appendChild(previewEl);
             }
@@ -86,7 +76,6 @@ function renderCalendarGrid() {
             modalDateTitle.textContent = `${year} / ${String(month + 1).padStart(2, '0')} / ${String(day).padStart(2, '0')}`;
             modalHolidayLabel.textContent = holidayName || "";
             modalHolidayLabel.classList.toggle("hidden", !holidayName);
-
             diaryInput.value = (userNotesData.diary && userNotesData.diary[dateKey]) || "";
             memoInput.value = (userNotesData.todo && userNotesData.todo[dateKey]) || "";
             memoModal.classList.remove("hidden");
@@ -94,4 +83,113 @@ function renderCalendarGrid() {
 
         calendarGrid.appendChild(cell);
     }
+}
+
+// --- 📂 📱 iPhone風メモ帳：フォルダリストの描画 ---
+function renderFolders() {
+    folderList.innerHTML = "";
+    userNotesData.folders.forEach(folder => {
+        const item = document.createElement("div");
+        item.className = `folder-item ${folder.id === currentFolderId ? "active" : ""}`;
+        
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = `📁 ${folder.name}`;
+        item.appendChild(nameSpan);
+
+        // 初期フォルダ以外は削除ボタンを表示
+        if (folder.id !== "f_default") {
+            const delBtn = document.createElement("button");
+            delBtn.className = "delete-btn";
+            delBtn.textContent = "🗑️";
+            delBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                if (confirm(`フォルダ「${folder.name}」とその中身をすべて削除しますか？`)) {
+                    userNotesData.folders = userNotesData.folders.filter(f => f.id !== folder.id);
+                    if (currentFolderId === folder.id) { currentFolderId = "f_default"; currentNoteId = "n_default"; }
+                    saveToLocalStorage(); renderFolders(); renderNotesList(); loadCurrentNote();
+                }
+            });
+            item.appendChild(delBtn);
+        }
+
+        item.addEventListener("click", () => {
+            currentFolderId = folder.id;
+            const activeFolder = userNotesData.folders.find(f => f.id === currentFolderId);
+            currentNoteId = activeFolder && activeFolder.notes.length > 0 ? activeFolder.notes[0].id : "";
+            renderFolders(); renderNotesList(); loadCurrentNote();
+            if (window.innerWidth <= 768) { notesAppWrapper.className = "notes-app-wrapper view-list"; }
+        });
+        folderList.appendChild(item);
+    });
+}
+
+// --- 📝 📱 iPhone風メモ帳：メモ一覧リストの描画 ---
+function renderNotesList() {
+    noteList.innerHTML = "";
+    const activeFolder = userNotesData.folders.find(f => f.id === currentFolderId);
+    if (!activeFolder) return;
+
+    currentFolderName.textContent = activeFolder.name;
+
+    // 更新日時が新しい順に並び替え
+    activeFolder.notes.sort((a, b) => b.updated - a.updated);
+
+    activeFolder.notes.forEach(note => {
+        const item = document.createElement("div");
+        item.className = `note-item ${note.id === currentNoteId ? "active" : ""}`;
+
+        const contentWrap = document.createElement("div");
+        contentWrap.style.overflow = "hidden";
+        contentWrap.style.flexGrow = "1";
+
+        const titleEl = document.createElement("div");
+        titleEl.className = "note-item-title";
+        titleEl.textContent = note.title.trim() || "タイトルなし";
+        contentWrap.appendChild(titleEl);
+
+        const previewEl = document.createElement("div");
+        previewEl.className = "note-item-preview";
+        previewEl.textContent = note.body.trim() || "テキストなし";
+        contentWrap.appendChild(previewEl);
+
+        item.appendChild(contentWrap);
+
+        const delBtn = document.createElement("button");
+        delBtn.className = "delete-btn";
+        delBtn.textContent = "🗑️";
+        delBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            activeFolder.notes = activeFolder.notes.filter(n => n.id !== note.id);
+            if (currentNoteId === note.id) { currentNoteId = activeFolder.notes.length > 0 ? activeFolder.notes[0].id : ""; }
+            saveToLocalStorage(); renderNotesList(); loadCurrentNote();
+        });
+        item.appendChild(delBtn);
+
+        item.addEventListener("click", () => {
+            currentNoteId = note.id;
+            renderNotesList(); loadCurrentNote();
+            if (window.innerWidth <= 768) { notesAppWrapper.className = "notes-app-wrapper view-editor"; }
+        });
+        noteList.appendChild(item);
+    });
+}
+
+// --- 📖 📱 iPhone風メモ帳：現在選択中のメモを右側エディタにロード ---
+function loadCurrentNote() {
+    const activeFolder = userNotesData.folders.find(f => f.id === currentFolderId);
+    if (!activeFolder || !currentNoteId) {
+        noteTitleInput.value = ""; noteBodyInput.value = "";
+        noteTitleInput.disabled = true; noteBodyInput.disabled = true;
+        noteSavedStatus.textContent = "メモがありません"; return;
+    }
+
+    const activeNote = activeFolder.notes.find(n => n.id === currentNoteId);
+    if (!activeNote) {
+        noteTitleInput.value = ""; noteBodyInput.value = ""; return;
+    }
+
+    noteTitleInput.disabled = false; noteBodyInput.disabled = false;
+    noteTitleInput.value = activeNote.title;
+    noteBodyInput.value = activeNote.body;
+    noteSavedStatus.textContent = "自動保存済";
 }
