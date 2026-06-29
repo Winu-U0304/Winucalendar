@@ -44,6 +44,16 @@ body, html { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
 .day-header { font-weight: bold; text-align: center; padding: 10px 0; font-size: 14px; color: #4a5568; border-bottom: 2px solid #000; text-transform: capitalize; }
 .day-header.sun { color: #e53e3e; }
 .day-header.sat { color: #3182ce; }
+
+/* 🌟🌟🌟 ここまで前半（下の後半コードへ続く） 🌟🌟🌟 */
+
+
+
+
+
+
+/* 🌟🌟🌟 ここから後半（前半のすぐ下に貼り付け） 🌟🌟🌟 */
+
 .day-cell { padding: 15px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); min-height: 105px; cursor: pointer; display: flex; flex-direction: column; border: 1px solid #e2e8f0; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); background: #ffffff; box-sizing: border-box; }
 .day-cell:hover { transform: translateY(-4px); box-shadow: 0 12px 20px rgba(0,0,0,0.06); border-color: #cbd5e0; }
 .day-number { font-size: 20px; font-weight: bold; color: #2d3748; }
@@ -112,8 +122,9 @@ body, html { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFo
     .month-big { font-size: 34px; margin: 0; order: -1; }
     .nav-buttons button { width: 36px; height: 36px; }
     .calendar-grid { gap: 4px; width: 100%; }
-    .day-header { font-size: 10px; padding: 4px 0; }
-    .day-cell { padding: 4px; min-height: 85px; border-radius: 6px; justify-content: flex-start; }
+    .calendar-grid > div:not(.day-header):not(.day-cell) { display: none !important; }
+    .day-header { font-size: 10px; padding: 4px 0; height: 16px; box-sizing: border-box; }
+    .day-cell { padding: 4px; min-height: 85px; border-radius: 6px; justify-content: flex-start; box-sizing: border-box; }
     .day-number { font-size: 13px; }
     .cell-holiday-name { font-size: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; margin-top: 1px; }
     .cell-diary-preview { font-size: 9px; padding: 1px 2px; border-radius: 4px; margin-top: auto; border-left: 2px solid #cbd5e0; }
