@@ -22,12 +22,15 @@ const diaryInput = document.getElementById("diaryInput");
 const memoInput = document.getElementById("memoInput");
 const backModalBtn = document.getElementById("backModalBtn");
 
-// 🌟【新設】タブ切り替え＆左右スライド用DOM
+// タブ切り替え＆左右スライド用DOM
 const tabCalendarBtn = document.getElementById("tabCalendarBtn");
 const tabNotesBtn = document.getElementById("tabNotesBtn");
 const slideContainer = document.getElementById("slideContainer");
 
-// 🌟【新設】iPhone風メモ帳用DOM
+// 🌓 ダークモード切り替えボタン用DOM
+const themeToggleBtn = document.getElementById("themeToggleBtn");
+
+// iPhone風メモ帳用DOM
 const notesAppWrapper = document.querySelector(".notes-app-wrapper");
 const folderList = document.getElementById("folderList");
 const noteList = document.getElementById("noteList");
@@ -46,7 +49,7 @@ let currentLogedInUser = "";         // ログイン中のユーザー名
 let targetCurrentDate = new Date();  // 現在表示しているカレンダーの年月
 let selectedDateKey = "";            // 開いている日付のキー
 
-// 🌟【データ構造進化】日記データに加えて、iPhone風フォルダ・メモ階層を完全サポート
+// 日記データ ＆ iPhone風フォルダ・メモ階層データ
 let userNotesData = { 
     diary: {}, 
     todo: {}, 
@@ -55,7 +58,7 @@ let userNotesData = {
     ]
 }; 
 
-// 🌟 メモ選択中の管理状態
+// メモ選択中の管理状態
 let currentFolderId = "f_default";
 let currentNoteId = "n_default";
 
