@@ -68,3 +68,120 @@ body, html { margin: 0; padding: 0; font-family: 'Georgia', serif; box-sizing: b
 .modal-body-vertical-layout input[type=text]:focus { border-color: #000; background: #fff; }
 .modal-body-vertical-layout textarea { width: 100%; flex-grow: 1; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 16px; line-height: 1.8; resize: none; outline: none; background: #fbfbfb; box-sizing: border-box; }
 .modal-body-vertical-layout textarea:focus { border-color: #000; background: #fff; }
+/* ==========================================
+   📱 スマホ・タブレット用のレスポンシブ調整 (768px以下)
+   ========================================== */
+@media screen and (max-width: 768px) {
+    /* 1. 全体の余白をスマホ用に少し狭くする */
+    .app-container {
+        padding: 10px;
+    }
+
+    /* 2. ヘッダーの要素（ウェルカム、自由メモ、ログアウト）を縦並びにして整列 */
+    .app-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+        padding: 15px;
+    }
+    .global-memo-wrap {
+        max-width: 100%;
+        margin: 0;
+    }
+    .global-memo-wrap textarea {
+        height: 60px; /* スマホで少しだけ入力しやすく */
+    }
+    #logoutBtn {
+        align-self: flex-end; /* ログアウトボタンは右寄せに */
+    }
+
+    /* 3. 【最重要】手帳風レイアウト（横並び）を縦並びに強制変更 */
+    .calendar-wrapper {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* 4. 左側の年・月エリアを上部に配置し、要素を横並びにスッキリ整列 */
+    .calendar-sidebar {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #fff;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        border: 1px solid #e2e8f0;
+        box-sizing: border-box;
+    }
+    /* 「February 2026」の文字エリア */
+    .calendar-sidebar > div:not(.month-big):not(.nav-buttons) {
+        display: flex;
+        flex-direction: column;
+    }
+    .month-eng {
+        font-size: 20px;
+    }
+    .year-num {
+        font-size: 13px;
+    }
+    /* ドカンと大きかった「2」の数字をスマホ用に小さくして中央に寄せる */
+    .month-big {
+        font-size: 36px;
+        margin: 0;
+        order: -1; /* 一番左に配置したい場合 */
+    }
+    .nav-buttons button {
+        width: 36px;
+        height: 36px;
+    }
+
+    /* 5. カレンダーのマス目同士の隙間を狭くして画面に収める */
+    .calendar-grid {
+        gap: 6px;
+    }
+
+    /* 6. 曜日の英語文字がはみ出さないように小さく */
+    .day-header {
+        font-size: 11px;
+        padding: 6px 0;
+    }
+
+    /* 7. マス目の高さを縮小し、中身が溢れないよう調整 */
+    .day-cell {
+        padding: 6px;
+        min-height: 65px; /* PCの105pxからスマホ用に縮小 */
+        border-radius: 8px;
+    }
+    .day-number {
+        font-size: 14px; /* 数字を小さく */
+    }
+    .cell-holiday-name {
+        font-size: 8px; /* 祝日名を小さく */
+        margin-top: 0;
+    }
+    /* 保存された日記のプレビュー（7文字タイトル） */
+    .cell-diary-preview {
+        font-size: 9px;
+        padding: 1px 3px;
+        border-radius: 4px;
+        margin-top: auto;
+        max-width: 100%;
+        border-left: 2px solid #cbd5e0;
+    }
+
+    /* 8. 日記入力モーダルの高さをスマホの画面にフィットさせる */
+    .modal-zoom-container {
+        height: 90vh;
+        padding: 15px;
+    }
+    .modal-header h3 {
+        font-size: 20px;
+    }
+    /* スマホキーボードが出ても崩れにくくするためにフォントサイズを微調整 */
+    .modal-body-vertical-layout input[type=text],
+    .modal-body-vertical-layout textarea {
+        font-size: 15px;
+        padding: 10px;
+    }
+}
