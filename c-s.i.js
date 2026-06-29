@@ -30,6 +30,9 @@ const slideContainer = document.getElementById("slideContainer");
 // 🌓 ダークモード切り替えボタン用DOM
 const themeToggleBtn = document.getElementById("themeToggleBtn");
 
+// 🌟【新設】日記モーダル内の「予定入力欄」用DOM
+const scheduleInput = document.getElementById("scheduleInput");
+
 // iPhone風メモ帳用DOM
 const notesAppWrapper = document.querySelector(".notes-app-wrapper");
 const folderList = document.getElementById("folderList");
@@ -49,10 +52,11 @@ let currentLogedInUser = "";         // ログイン中のユーザー名
 let targetCurrentDate = new Date();  // 現在表示しているカレンダーの年月
 let selectedDateKey = "";            // 開いている日付のキー
 
-// 日記データ ＆ iPhone風フォルダ・メモ階層データ
+// 🌟 日記 ＆ 予定 ＆ iPhone風フォルダ・メモ階層データ
 let userNotesData = { 
     diary: {}, 
-    todo: {}, 
+    todo: {},      // 日記本文
+    schedule: {},  // 🌟【新設】カレンダー直下表示用の予定データ
     folders: [
         { id: "f_default", name: "メモ", notes: [{ id: "n_default", title: "最初のメモ", body: "ここに内容を入力できます。", updated: Date.now() }] }
     ]
