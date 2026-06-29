@@ -9,7 +9,6 @@ loginBtn.addEventListener("click", () => {
     localStorage.setItem("cal_auto_login_key", key);
 
     const saved = localStorage.getItem(`cal_premium_${currentLogedInUser}`);
-    // フォルダ・メモ構造が保存データにない古いバージョンの場合は自動で初期化
     userNotesData = saved ? JSON.parse(saved) : { diary: {}, todo: {}, folders: [] };
     if (!userNotesData.folders || userNotesData.folders.length === 0) {
         userNotesData.folders = [
@@ -21,7 +20,6 @@ loginBtn.addEventListener("click", () => {
     mainSection.classList.remove("hidden");
     targetCurrentDate = new Date();
     
-    // すべてのアプリ画面を一挙に最新の状態へ描画
     renderCalendarGrid();
     renderFolders();
     renderNotesList();
@@ -44,17 +42,17 @@ logoutBtn.addEventListener("click", () => {
     loginSection.classList.remove("hidden");
 });
 
-// --- 2. 🎛️ 🌟【新設】タブ切り替え ＆ 滑らかスライドアニメーション ---
+// --- 2. 🎛️ タブ切り替え ＆ 滑らかスライドアニメーション ---
 tabCalendarBtn.addEventListener("click", () => {
     tabCalendarBtn.classList.add("active");
     tabNotesBtn.classList.remove("active");
-    slideContainer.style.transform = "translateX(0%)"; // 左側（カレンダー）にスライド
+    slideContainer.style.transform = "translateX(0%)";
 });
 
 tabNotesBtn.addEventListener("click", () => {
     tabNotesBtn.classList.add("active");
     tabCalendarBtn.classList.remove("active");
-    slideContainer.style.transform = "translateX(-50%)"; // 右側（メモ帳）にスライド
+    slideContainer.style.transform = "translateX(-50%)";
 });
 
 // --- 3. 📅 カレンダー月切り替え ＆ 日記自動保存 ---
@@ -87,9 +85,7 @@ backModalBtn.addEventListener("click", () => {
     memoModal.classList.add("hidden"); renderCalendarGrid();
 });
 
-// --- 4. 📂 📝 🌟【新設】iPhone風メモ帳：操作＆リアルタイム自動保存イベント ---
-
-// ➕ フォルダを新規作成
+// --- 4. 📂 📝 iPhone風メモ帳：操作＆リアルタイム自動保存イベント ---
 addFolderBtn.addEventListener("click", () => {
     const fName = prompt("新しいフォルダ名を入力してください：");
     if (!fName || !fName.trim()) return;
@@ -100,7 +96,6 @@ addFolderBtn.addEventListener("click", () => {
     saveToLocalStorage(); renderFolders(); renderNotesList(); loadCurrentNote();
 });
 
-// 📝 メモを新規作成
 addNoteBtn.addEventListener("click", () => {
     const activeFolder = userNotesData.folders.find(f => f.id === currentFolderId);
     if (!activeFolder) return;
@@ -111,28 +106,24 @@ addNoteBtn.addEventListener("click", () => {
     if (window.innerWidth <= 768) { notesAppWrapper.className = "notes-app-wrapper view-editor"; }
 });
 
-// 📝 エディタ：タイトル入力時のリアルタイム自動保存
 noteTitleInput.addEventListener("input", () => {
     const activeFolder = userNotesData.folders.find(f => f.id === currentFolderId);
     if (!activeFolder || !currentNoteId) return;
     const activeNote = activeFolder.notes.find(n => n.id === currentNoteId);
     if (!activeNote) return;
-
     activeNote.title = noteTitleInput.value;
     activeNote.updated = Date.now();
     noteSavedStatus.textContent = "保存中...";
     saveToLocalStorage();
-    renderNotesList(); // リストのプレビューをリアルタイム更新
+    renderNotesList();
     setTimeout(() => { noteSavedStatus.textContent = "自動保存済"; }, 300);
 });
 
-// 📝 エディタ：本文入力時のリアルタイム自動保存
 noteBodyInput.addEventListener("input", () => {
     const activeFolder = userNotesData.folders.find(f => f.id === currentFolderId);
     if (!activeFolder || !currentNoteId) return;
     const activeNote = activeFolder.notes.find(n => n.id === currentNoteId);
     if (!activeNote) return;
-
     activeNote.body = noteBodyInput.value;
     activeNote.updated = Date.now();
     noteSavedStatus.textContent = "保存中...";
@@ -141,9 +132,25 @@ noteBodyInput.addEventListener("input", () => {
     setTimeout(() => { noteSavedStatus.textContent = "自動保存済"; }, 300);
 });
 
-// 📱 スマホ専用：階層戻るボタンのイベント群
 backToFoldersBtn.addEventListener("click", () => { notesAppWrapper.className = "notes-app-wrapper"; });
 backToNotesListBtn.addEventListener("click", () => { notesAppWrapper.className = "notes-app-wrapper view-list"; });
 
-// 画面サイズ変更時にカレンダーをリサイズ対応
+// --- 5. 🌓 大人なライト・ダークモード自動切り替え＆永続保存エンジン（LIGHT / DARK ＆ Georgia統一） ---
+if (themeToggleBtn) {
+    const savedTheme = localStorage.getItem("diary_app_theme") || "light";
+    document.documentElement.setAttribute("data-theme", savedTheme);
+    themeToggleBtn.textContent = savedTheme === "dark" ? "☀️ LIGHT" : "🌙 DARK";
+    themeToggleBtn.style.fontFamily = "'Georgia', serif";
+
+    themeToggleBtn.addEventListener("click", () => {
+        const currentTheme = document.documentElement.getAttribute("data-theme");
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+        
+        document.documentElement.setAttribute("data-theme", newTheme);
+        localStorage.setItem("diary_app_theme", newTheme);
+        themeToggleBtn.textContent = newTheme === "dark" ? "☀️ LIGHT" : "🌙 DARK";
+        renderCalendarGrid(); 
+    });
+}
+
 window.addEventListener("resize", () => { renderCalendarGrid(); });
