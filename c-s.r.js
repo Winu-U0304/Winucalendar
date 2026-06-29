@@ -11,7 +11,7 @@ function renderCalendarGrid() {
 
     let currentWeekdays = [...WEEKDAYS];
     if (window.innerWidth <= 768) {
-        currentWeekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        currentWeekdays = ["　　Sun　　", "　　Mon　　", "　　Tue　　", "　　Wed　　", "　　Thu　　", "　　Fri　　", "　　Sat　　"];
     }
 
     currentWeekdays.forEach((day, index) => {
