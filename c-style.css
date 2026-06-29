@@ -1,8 +1,8 @@
-/* 1. 基本＆テーマ設定（白をベースにした洗練された高級デザイン） */
+/* 1. 基本＆テーマ設定 */
 body, html { margin: 0; padding: 0; font-family: 'Georgia', serif; box-sizing: border-box; background: #f8f9fa; color: #1a202c; }
 .hidden { display: none !important; }
 
-/* 2. 🚪 上品で明るい白ベースのログイン画面 */
+/* 2. 🚪 ログイン画面 */
 .login-wrapper { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; z-index: 1000; background: #f0f2f5; }
 .premium-login-card { background: #ffffff; padding: 45px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; max-width: 500px; width: 90%; border: 1px solid #e2e8f0; }
 .login-title { font-size: 24px; color: #1a202c; font-family: sans-serif; font-weight: bold; letter-spacing: 1px; margin-bottom: 10px; }
@@ -35,31 +35,30 @@ body, html { margin: 0; padding: 0; font-family: 'Georgia', serif; box-sizing: b
 .nav-buttons button { background: #fff; border: 1px solid #e2e8f0; color: #000; width: 40px; height: 40px; border-radius: 50%; font-size: 16px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
 .nav-buttons button:hover { background: #000; color: #fff; border-color: #000; }
 
-/* 5. カレンダーマス目の配置とデコレーション（バグのない綺麗な正方形マス） */
+/* 5. カレンダーマス目の配置とデコレーション */
 .calendar-body { flex-grow: 1; }
 .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
 .day-header { font-weight: bold; text-align: center; padding: 10px 0; font-size: 14px; color: #4a5568; border-bottom: 2px solid #000; text-transform: capitalize; }
 .day-header.sun { color: #e53e3e; }
 .day-header.sat { color: #3182ce; }
-.day-cell { padding: 15px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); min-height: 105px; cursor: pointer; display: flex; flex-direction: column; border: 1px solid #e2e8f0; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); background: #ffffff; }
+.day-cell { padding: 15px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); min-height: 105px; cursor: pointer; display: flex; flex-direction: column; border: 1px solid #e2e8f0; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); background: #ffffff; box-sizing: border-box; }
 .day-cell:hover { transform: translateY(-4px); box-shadow: 0 12px 20px rgba(0,0,0,0.06); border-color: #cbd5e0; }
 .day-number { font-size: 20px; font-weight: bold; color: #2d3748; }
 .day-cell.sun .day-number, .day-cell.holiday .day-number { color: #e53e3e; }
 .day-cell.sat .day-number { color: #3182ce; }
 .cell-holiday-name { font-size: 10px; color: #e53e3e; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
 .day-cell.today { border: 2px solid #000; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-.cell-diary-preview { font-size: 11px; color: #4a5568; margin-top: auto; background: #f7fafc; padding: 3px 6px; border-radius: 6px; border-left: 3px solid #cbd5e0; font-family: sans-serif; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cell-diary-preview { font-size: 11px; color: #4a5568; margin-top: auto; background: #f7fafc; padding: 3px 6px; border-radius: 6px; border-left: 3px solid #cbd5e0; font-family: sans-serif; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-sizing: border-box; max-width: 100%; }
 
-/* 6. 📝 縦型日記モーダルの装飾（上がタイトル・下が本文の快適レイアウト） */
+/* 6. 📝 縦型日記モーダルの装飾 */
 .modal-wrapper { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(255,255,255,0.98); display: flex; justify-content: center; align-items: center; z-index: 2000; animation: zoomIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
 @keyframes zoomIn { from { transform: scale(0.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-.modal-zoom-container { max-width: 800px; width: 95%; height: 85vh; display: flex; flex-direction: column; background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+.modal-zoom-container { max-width: 800px; width: 95%; height: 85vh; display: flex; flex-direction: column; background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; box-sizing: border-box; }
 .modal-header { display: flex; align-items: center; gap: 20px; border-bottom: 2px solid #1a202c; padding-bottom: 15px; margin-bottom: 20px; }
 .back-btn { background: #000; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; }
 .back-btn:hover { background: #333; }
 .modal-header h3 { margin: 0; font-size: 26px; font-weight: bold; }
 .holiday-name { background: #fff5f5; color: #e53e3e; padding: 4px 10px; border-radius: 6px; font-size: 13px; font-weight: bold; }
-
 .modal-body-vertical-layout { display: flex; flex-direction: column; gap: 20px; flex-grow: 1; height: calc(100% - 70px); }
 .diary-title-section, .diary-main-section { display: flex; flex-direction: column; }
 .diary-main-section { flex-grow: 1; }
@@ -68,120 +67,28 @@ body, html { margin: 0; padding: 0; font-family: 'Georgia', serif; box-sizing: b
 .modal-body-vertical-layout input[type=text]:focus { border-color: #000; background: #fff; }
 .modal-body-vertical-layout textarea { width: 100%; flex-grow: 1; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 16px; line-height: 1.8; resize: none; outline: none; background: #fbfbfb; box-sizing: border-box; }
 .modal-body-vertical-layout textarea:focus { border-color: #000; background: #fff; }
-/* ==========================================
-   📱 スマホ・タブレット用のレスポンシブ調整 (768px以下)
-   ========================================== */
+
+/* 📱 スマホ・タブレット用のレスポンシブ最適化 (768px以下) */
 @media screen and (max-width: 768px) {
-    /* 1. 全体の余白をスマホ用に少し狭くする */
-    .app-container {
-        padding: 10px;
-    }
-
-    /* 2. ヘッダーの要素（ウェルカム、自由メモ、ログアウト）を縦並びにして整列 */
-    .app-header {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 15px;
-        padding: 15px;
-    }
-    .global-memo-wrap {
-        max-width: 100%;
-        margin: 0;
-    }
-    .global-memo-wrap textarea {
-        height: 60px; /* スマホで少しだけ入力しやすく */
-    }
-    #logoutBtn {
-        align-self: flex-end; /* ログアウトボタンは右寄せに */
-    }
-
-    /* 3. 【最重要】手帳風レイアウト（横並び）を縦並びに強制変更 */
-    .calendar-wrapper {
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    /* 4. 左側の年・月エリアを上部に配置し、要素を横並びにスッキリ整列 */
-    .calendar-sidebar {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: #fff;
-        padding: 15px;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-        border: 1px solid #e2e8f0;
-        box-sizing: border-box;
-    }
-    /* 「February 2026」の文字エリア */
-    .calendar-sidebar > div:not(.month-big):not(.nav-buttons) {
-        display: flex;
-        flex-direction: column;
-    }
-    .month-eng {
-        font-size: 20px;
-    }
-    .year-num {
-        font-size: 13px;
-    }
-    /* ドカンと大きかった「2」の数字をスマホ用に小さくして中央に寄せる */
-    .month-big {
-        font-size: 36px;
-        margin: 0;
-        order: -1; /* 一番左に配置したい場合 */
-    }
-    .nav-buttons button {
-        width: 36px;
-        height: 36px;
-    }
-
-    /* 5. カレンダーのマス目同士の隙間を狭くして画面に収める */
-    .calendar-grid {
-        gap: 6px;
-    }
-
-    /* 6. 曜日の英語文字がはみ出さないように小さく */
-    .day-header {
-        font-size: 11px;
-        padding: 6px 0;
-    }
-
-    /* 7. マス目の高さを縮小し、中身が溢れないよう調整 */
-    .day-cell {
-        padding: 6px;
-        min-height: 65px; /* PCの105pxからスマホ用に縮小 */
-        border-radius: 8px;
-    }
-    .day-number {
-        font-size: 14px; /* 数字を小さく */
-    }
-    .cell-holiday-name {
-        font-size: 8px; /* 祝日名を小さく */
-        margin-top: 0;
-    }
-    /* 保存された日記のプレビュー（7文字タイトル） */
-    .cell-diary-preview {
-        font-size: 9px;
-        padding: 1px 3px;
-        border-radius: 4px;
-        margin-top: auto;
-        max-width: 100%;
-        border-left: 2px solid #cbd5e0;
-    }
-
-    /* 8. 日記入力モーダルの高さをスマホの画面にフィットさせる */
-    .modal-zoom-container {
-        height: 90vh;
-        padding: 15px;
-    }
-    .modal-header h3 {
-        font-size: 20px;
-    }
-    /* スマホキーボードが出ても崩れにくくするためにフォントサイズを微調整 */
-    .modal-body-vertical-layout input[type=text],
-    .modal-body-vertical-layout textarea {
-        font-size: 15px;
-        padding: 10px;
-    }
+    .app-container { padding: 10px; }
+    .app-header { flex-direction: column; align-items: stretch; gap: 12px; padding: 12px; }
+    .global-memo-wrap { max-width: 100%; margin: 0; }
+    .global-memo-wrap textarea { height: 55px; }
+    #logoutBtn { align-self: flex-end; }
+    .calendar-wrapper { flex-direction: column; gap: 15px; }
+    .calendar-sidebar { width: 100%; display: flex; align-items: center; justify-content: space-between; background: #fff; padding: 12px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; box-sizing: border-box; }
+    .calendar-sidebar > div:not(.month-big):not(.nav-buttons) { display: flex; flex-direction: column; }
+    .month-eng { font-size: 20px; }
+    .year-num { font-size: 13px; }
+    .month-big { font-size: 34px; margin: 0; order: -1; }
+    .nav-buttons button { width: 36px; height: 36px; }
+    .calendar-grid { gap: 5px; }
+    .day-header { font-size: 11px; padding: 5px 0; }
+    .day-cell { padding: 4px; min-height: 65px; border-radius: 8px; }
+    .day-number { font-size: 13px; }
+    .cell-holiday-name { font-size: 8px; transform: scale(0.9); transform-origin: left top; }
+    .cell-diary-preview { font-size: 9px; padding: 1px 2px; border-radius: 4px; margin-top: auto; border-left: 2px solid #cbd5e0; }
+    .modal-zoom-container { height: 90vh; padding: 15px; }
+    .modal-header h3 { font-size: 18px; }
+    .modal-body-vertical-layout input[type=text], .modal-body-vertical-layout textarea { font-size: 14px; padding: 8px; }
 }
