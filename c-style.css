@@ -29,15 +29,15 @@ body, html { margin: 0; padding: 0; font-family: 'Georgia', 'Times New Roman', s
 #logoutBtn { background: var(--bg-tab); color: var(--text-sub); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; font-family: inherit; }
 
 /* 🌟🌟🌟 ここまで【上（1/3）】（下の【中】へ続く） 🌟🌟🌟 */
-/* 🌟🌟🌟 ここから【中（2/3）】 🌟🌟🌟 */
+/* 🌟🌟🌟 2つ目：ここから【中】（前半のすぐ下に貼り付け） 🌟🌟🌟 */
 
-/* 🔄 滑らか3画面左右スライド構造 */
-.slide-viewport { width: 100%; overflow: hidden; position: relative; }
-.slide-container { display: flex; width: 300%; transform: translateX(0%); transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1); }
-.slide-page { width: 33.333%; flex-shrink: 0; box-sizing: border-box; transition: opacity 0.3s ease; }
+/* 🔄 滑らか左右スライド構造（PC・スマホ共通で絶対に場外へはみ出さない新設計） */
+.slide-viewport { width: 100%; overflow: hidden; position: relative; box-sizing: border-box; }
+.slide-container { display: flex; width: 200%; transform: translateX(0%); transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1); box-sizing: border-box; }
+.slide-page { width: 50%; flex-shrink: 0; box-sizing: border-box; transition: opacity 0.3s ease; padding: 0 5px; }
 
 /* 4. 手帳風カレンダーレイアウト */
-.calendar-wrapper { display: flex; gap: 40px; margin-top: 20px; align-items: flex-start; }
+.calendar-wrapper { display: flex; gap: 40px; margin-top: 20px; align-items: flex-start; width: 100%; box-sizing: border-box; }
 .calendar-sidebar { width: 180px; flex-shrink: 0; }
 .month-eng { font-size: 26px; font-weight: bold; font-style: italic; color: var(--text-main); }
 .year-num { font-size: 16px; color: var(--text-sub); margin-top: -2px; }
@@ -45,32 +45,27 @@ body, html { margin: 0; padding: 0; font-family: 'Georgia', 'Times New Roman', s
 .nav-buttons { display: flex; gap: 8px; }
 .nav-buttons button { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); width: 40px; height: 40px; border-radius: 50%; font-size: 16px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
 .nav-buttons button:hover { background: var(--text-main); color: var(--bg-card); border-color: var(--text-main); }
-.calendar-body { flex-grow: 1; }
-.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
+.calendar-body { flex-grow: 1; min-width: 0; }
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; width: 100%; box-sizing: border-box; }
 .day-header { font-weight: bold; text-align: center; padding: 10px 0; font-size: 14px; color: var(--text-sub); border-bottom: 2px solid var(--text-main); text-transform: capitalize; }
 .day-header.sun { color: #e53e3e; }
 .day-header.sat { color: #3182ce; }
-.day-cell { padding: 10px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); min-height: 115px; cursor: pointer; display: flex; flex-direction: column; gap: 4px; border: 1px solid var(--border-color); transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); background: var(--bg-card); box-sizing: border-box; }
+.day-cell { padding: 15px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); min-height: 105px; cursor: pointer; display: flex; flex-direction: column; border: 1px solid var(--border-color); transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); background: var(--bg-card); box-sizing: border-box; }
 .day-cell:hover { transform: translateY(-4px); box-shadow: 0 12px 20px rgba(0,0,0,0.06); border-color: var(--text-sub); }
-.day-number { font-size: 18px; font-weight: bold; color: var(--text-main); }
+.day-number { font-size: 20px; font-weight: bold; color: var(--text-main); }
 .day-cell.sun .day-number, .day-cell.holiday .day-number { color: #e53e3e; }
 .day-cell.sat .day-number { color: #3182ce; }
-.cell-holiday-name { font-size: 10px; color: #e53e3e; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cell-holiday-name { font-size: 10px; color: #e53e3e; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
 .day-cell.today { border: 2px solid var(--text-main); box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-.cell-diary-preview { font-size: 11px; color: var(--text-sub); background: var(--bg-input); padding: 2px 4px; border-radius: 4px; border-left: 3px solid var(--border-color); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.cell-diary-preview { font-size: 11px; color: var(--text-sub); margin-top: auto; background: var(--bg-input); padding: 3px 6px; border-radius: 6px; border-left: 3px solid var(--border-color); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-sizing: border-box; max-width: 100%; }
 
-/* 🆕 予定（スケジュール）バッジのデザイン */
-.cell-plan-wrapper { display: flex; flex-direction: column; gap: 2px; width: 100%; overflow: hidden; }
-.cell-plan-badge { font-size: 11px; padding: 2px 5px; background: var(--bg-plan); color: var(--text-plan); border-radius: 4px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+/* 5. 📖 高級感あふれる手帳風メモ帳レイアウト */
+.notes-app-wrapper { display: flex; height: 70vh; background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-color); box-shadow: 0 10px 40px rgba(0,0,0,0.04); overflow: hidden; width: 100%; box-sizing: border-box; }
+.notes-sidebar { width: 240px; background: var(--bg-tab); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0; }
+.notes-list-pane { width: 280px; background: var(--bg-card); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0; }
+.notes-editor-pane { flex-grow: 1; background: var(--bg-card); display: flex; flex-direction: column; min-width: 0; }
 
-/* 5. 📅 スケジュールタイムライン */
-.schedule-dashboard { background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-color); height: 70vh; display: flex; flex-direction: column; overflow: hidden; }
-.schedule-timeline { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-.timeline-item { display: flex; gap: 20px; padding: 15px; border-radius: 12px; background: var(--bg-tab); border-left: 5px solid var(--accent-gold); align-items: center; }
-.timeline-date { font-weight: bold; font-size: 16px; min-width: 110px; color: var(--accent-gold); }
-.timeline-content { font-size: 15px; font-weight: 600; color: var(--text-main); }
-
-/* 🌟🌟🌟 ここまで【中（2/3）】（下の【下】へ続く） 🌟🌟🌟 */
+/* 🌟🌟🌟 2つ目：ここまで【中】（すぐ下の【下】コードへ続く） 🌟🌟🌟 */
 /* 🌟🌟🌟 3つ目：ここから【下】（中盤のすぐ下に貼り付け） 🌟🌟🌟 */
 
 .pane-header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--bg-tab); min-height: 55px; box-sizing: border-box; }
@@ -151,7 +146,7 @@ body, html { margin: 0; padding: 0; font-family: 'Georgia', 'Times New Roman', s
     .modal-body-vertical-layout input[type=text], .modal-body-vertical-layout textarea { font-size: 14px; padding: 8px; }
 }
 
-/* 🌟 カレンダーマスの中の予定プレビュー装飾（ライト・ダーク共通対応） */
+/* 🌟 カレンダーマスの中の予定プレビュー装飾 */
 .cell-schedule-preview { font-size: 9px; color: var(--accent-gold); font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; margin-top: 2px; padding: 1px 3px; background: rgba(184, 134, 0, 0.05); border-radius: 4px; border-left: 2px solid var(--accent-gold); font-family: sans-serif; }
 [data-theme="dark"] .cell-schedule-preview { color: #ffd700; background: rgba(255, 215, 0, 0.08); border-left-color: #ffd700; }
 .cell-schedule-preview.pc-spec { font-size: 11px; margin-top: 4px; padding: 2px 6px; }
