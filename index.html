@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>プレミアム手帳＆メモ</title>
     <link rel="stylesheet" href="c-style.css">
-    <link rel="icon" href="calendar.png"
 </head>
 <body class="bg-theme">
     <!-- 🚪 ログイン画面 -->
@@ -18,7 +17,7 @@
         </div>
     </div>
 
-    <!-- 📅 📱 メイン画面（タブ切り替え＆スライド構造） -->
+    <!-- 📅 メイン画面 -->
     <div id="mainSection" class="app-container hidden">
         <header class="app-header">
             <div class="welcome-area"><span class="welcome-neon">WELCOME</span><h2 id="currentUser"></h2></div>
@@ -27,7 +26,10 @@
                 <button id="tabCalendarBtn" class="tab-btn active">カレンダー</button>
                 <button id="tabNotesBtn" class="tab-btn">メモ帳</button>
             </div>
-            <button id="logoutBtn">LOGOUT</button>
+            <div class="header-controls">
+                <button id="themeToggleBtn" class="theme-toggle-btn">🌙 モード切替</button>
+                <button id="logoutBtn">LOGOUT</button>
+            </div>
         </header>
 
         <!-- 🔄 左右滑らかスライド用コンテナ -->
