@@ -2,6 +2,7 @@ const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Frida
 
 // --- 📅 カレンダーのマス目を動的に描画 ---
 function renderCalendarGrid() {
+    if (!calendarGrid) return;
     calendarGrid.innerHTML = "";
     const year = targetCurrentDate.getFullYear();
     const month = targetCurrentDate.getMonth();
@@ -30,6 +31,7 @@ function renderCalendarGrid() {
         calendarGrid.appendChild(document.createElement("div"));
     }
 
+    const today = new Date();
     for (let day = 1; day <= totalDaysInMonth; day++) {
         const cell = document.createElement("div");
         cell.className = "day-cell";
@@ -38,7 +40,6 @@ function renderCalendarGrid() {
         if (currentDayOfWeek === 0) cell.classList.add("sun");
         if (currentDayOfWeek === 6) cell.classList.add("sat");
 
-        const today = new Date();
         if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
             cell.classList.add("today");
         }
@@ -60,13 +61,9 @@ function renderCalendarGrid() {
 
         const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         
-        // 🌟【新設：予定のレンダリングエンジン】
-        // 1日の中に改行で複数入っていても、スマホ・PCそれぞれに最適化して描画
         if (userNotesData.schedule && userNotesData.schedule[dateKey]) {
             const lines = userNotesData.schedule[dateKey].split("\n").filter(l => l.trim() !== "");
-            
             if (window.innerWidth <= 768) {
-                // 📱 スマホ時は「予定を縦並び」に配置。はみ出たら即「…」
                 lines.forEach(line => {
                     const schEl = document.createElement("div");
                     schEl.className = "cell-schedule-preview";
@@ -74,7 +71,6 @@ function renderCalendarGrid() {
                     cell.appendChild(schEl);
                 });
             } else {
-                // 💻 パソコン時はスッキリ1行にまとめて綺麗に表示
                 const schWrap = document.createElement("div");
                 schWrap.className = "cell-schedule-preview pc-spec";
                 schWrap.textContent = lines.join(" / ");
@@ -82,7 +78,6 @@ function renderCalendarGrid() {
             }
         }
 
-        // 📖 日記のタイトル表示（PC版のみ7文字制限で普通に表示、スマホは非表示）
         if (userNotesData.diary && userNotesData.diary[dateKey]) {
             if (window.innerWidth > 768) {
                 const previewEl = document.createElement("div");
@@ -99,12 +94,9 @@ function renderCalendarGrid() {
             modalDateTitle.textContent = `${year} / ${String(month + 1).padStart(2, '0')} / ${String(day).padStart(2, '0')}`;
             modalHolidayLabel.textContent = holidayName || "";
             modalHolidayLabel.classList.toggle("hidden", !holidayName);
-            
-            // 既存のデータをそれぞれの入力欄へセット（予定も自動復元）
             diaryInput.value = (userNotesData.diary && userNotesData.diary[dateKey]) || "";
             memoInput.value = (userNotesData.todo && userNotesData.todo[dateKey]) || "";
             scheduleInput.value = (userNotesData.schedule && userNotesData.schedule[dateKey]) || "";
-            
             memoModal.classList.remove("hidden");
         });
 
@@ -114,6 +106,7 @@ function renderCalendarGrid() {
 
 // --- 📂 iPhone風メモ帳：フォルダリストの描画 ---
 function renderFolders() {
+    if (!folderList) return;
     folderList.innerHTML = "";
     userNotesData.folders.forEach(folder => {
         const item = document.createElement("div");
@@ -141,7 +134,7 @@ function renderFolders() {
         item.addEventListener("click", () => {
             currentFolderId = folder.id;
             const activeFolder = userNotesData.folders.find(f => f.id === currentFolderId);
-            currentNoteId = activeFolder && activeFolder.notes.length > 0 ? activeFolder.notes.id : "";
+            currentNoteId = activeFolder && activeFolder.notes.length > 0 ? activeFolder.notes[0].id : "";
             renderFolders(); renderNotesList(); loadCurrentNote();
             if (window.innerWidth <= 768) { notesAppWrapper.className = "notes-app-wrapper view-list"; }
         });
@@ -151,14 +144,17 @@ function renderFolders() {
 
 // --- 📝 iPhone風メモ帳：メモ一覧リストの描画 ---
 function renderNotesList() {
+    if (!noteList) return;
     noteList.innerHTML = "";
     const activeFolder = userNotesData.folders.find(f => f.id === currentFolderId);
     if (!activeFolder) return;
 
     currentFolderName.textContent = activeFolder.name;
-    activeFolder.notes.sort((a, b) => b.updated - a.updated);
 
-    activeFolder.notes.forEach(note => {
+    // 無限生成を防止するため、描画時に配列の並び替えを直接破壊的に行わない安全設計に修正
+    const displayNotes = [...activeFolder.notes].sort((a, b) => b.updated - a.updated);
+
+    displayNotes.forEach(note => {
         const item = document.createElement("div");
         item.className = `note-item ${note.id === currentNoteId ? "active" : ""}`;
 
@@ -184,7 +180,7 @@ function renderNotesList() {
         delBtn.addEventListener("click", (e) => {
             e.stopPropagation();
             activeFolder.notes = activeFolder.notes.filter(n => n.id !== note.id);
-            if (currentNoteId === note.id) { currentNoteId = activeFolder.notes.length > 0 ? activeFolder.notes.id : ""; }
+            if (currentNoteId === note.id) { currentNoteId = activeFolder.notes.length > 0 ? activeFolder.notes[0].id : ""; }
             saveToLocalStorage(); renderNotesList(); loadCurrentNote();
         });
         item.appendChild(delBtn);
@@ -200,8 +196,9 @@ function renderNotesList() {
 
 // --- 📖 iPhone風メモ帳：現在選択中のメモをロード ---
 function loadCurrentNote() {
+    if (!noteTitleInput || !noteBodyInput) return;
     const activeFolder = userNotesData.folders.find(f => f.id === currentFolderId);
-    if (!activeFolder || !currentNoteId) {
+    if (!activeFolder || !currentNoteId || activeFolder.notes.length === 0) {
         noteTitleInput.value = ""; noteBodyInput.value = "";
         noteTitleInput.disabled = true; noteBodyInput.disabled = true;
         noteSavedStatus.textContent = "メモがありません"; return;
