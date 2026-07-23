@@ -448,6 +448,15 @@
         </div>
     </div>
 
+    <!-- 📌 拡充：通知ポップアップ（画面最上部に現れるアラーム停止窓） -->
+    <div id="notificationBanner" class="modal-wrapper hidden" style="background: rgba(0,0,0,0.6); align-items: flex-start; padding-top: 30px;">
+        <div class="modal-zoom-container" style="background: #ff9f0a; color: #000; text-align: center; max-width: 380px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);">
+            <h2 style="font-size: 20px; margin-bottom: 8px;">⏰ <span id="notif-title">時間になりました！</span></h2>
+            <p style="font-size: 14px; margin-bottom: 15px; opacity: 0.9;" id="notif-body">タイマーまたはアラームの設定時間です。</p>
+            <button onclick="stopSystemAlert()" style="padding: 12px 30px; font-size: 16px; font-weight: bold; background: #000; color: #fff; border: none; border-radius: 8px; cursor: pointer; width: 100%;">アラームを止める</button>
+        </div>
+    </div>
+
     <!-- 日記・予定モーダル -->
     <div id="memoModal" class="modal-wrapper hidden">
         <div class="modal-zoom-container">
@@ -480,13 +489,13 @@
                 theme: "モード", lang: "言語", bg: "背景色", text: "文字色", font: "フォント",
                 clock: "時計", diary: "手帳", sw: "ストップウォッチ", timer: "タイマー", alarm: "アラーム", calc: "電卓",
                 start: "スタート", stop: "ストップ", reset: "リセット", set: "セット", clear: "解除",
-                alarm_set: "アラーム設定中: ", alarm_none: "未設定", alarm_ring: "⏰ 時間です！"
+                alarm_set: "アラーム設定中: ", alarm_none: "未設定", alarm_ring: "⏰ 時間です！", notif_timer: "⏳ タイマーが終了しました！", notif_alarm: "🔔 アラームの時間です！"
             },
             en: {
                 theme: "Theme", lang: "Language", bg: "Background", text: "Text Color", font: "Font",
                 clock: "Clock", diary: "Diary", sw: "Stopwatch", timer: "Timer", alarm: "Alarm", calc: "Calc",
                 start: "Start", stop: "Stop", reset: "Reset", set: "Set", clear: "Clear",
-                alarm_set: "Alarm set for: ", alarm_none: "Not set", alarm_ring: "⏰ Time's up!"
+                alarm_set: "Alarm set for: ", alarm_none: "Not set", alarm_ring: "⏰ Time's up!", notif_timer: "⏳ Timer finished!", notif_alarm: "🔔 Alarm time reached!"
             }
         };
         let currentLang = 'ja';
@@ -511,6 +520,7 @@
             document.documentElement.style.setProperty('--card-bg', card);
             updateColors();
         }
+
         // 画面の配色（背景色・文字色）をリアルタイムに更新する関数
         function updateColors() {
             const bg = document.getElementById('bg-color-picker').value;
@@ -642,7 +652,7 @@
             const diff = timerEndTime - Date.now();
             if (diff <= 0) {
                 resetTimer();
-                alert(langData[currentLang].alarm_ring);
+                triggerSystemAlert('timer'); // 🔊 音と振動のアラームを呼び出す
                 return;
             }
             const s = Math.ceil(diff / 1000) % 60;
@@ -677,7 +687,7 @@
             if (currentStr === targetAlarmTime) {
                 targetAlarmTime = null;
                 updateAlarmStatusDisplay();
-                alert(langData[currentLang].alarm_ring);
+                triggerSystemAlert('alarm'); // 🔊 音と振動のアラームを呼び出す
             }
         }
 
@@ -703,17 +713,13 @@
         }
 
         // ==========================================
-        // 📅 Winucalendar 手帳システム（c-s.i.js 統合相当）
+        // 📅 Winucalendar 手帳システム（ユーザーデータ完全分離版）
         // ==========================================
-        const SECRETS = { "winu": "管理者", "guest": "ゲストユーザー" };
-        const STORAGE_KEY_DIARY = "winucalendar_v3_diaryData";
-        const STORAGE_KEY_NOTES = "winucalendar_v3_notesData";
+        const STORAGE_KEY_SESSION = "winucalendar_v3_sessionUser"; // ログイン記憶用
         
-        let diaryData = JSON.parse(localStorage.getItem(STORAGE_KEY_DIARY)) || {};
-        let notesData = JSON.parse(localStorage.getItem(STORAGE_KEY_NOTES)) || {
-            folders: [{ id: "f-all", name: "すべてのメモ" }],
-            notes: []
-        };
+        // グローバル変数としては空で用意し、ログイン後にユーザー専用データを読み込む
+        let diaryData = {};
+        let notesData = { folders: [{ id: "f-all", name: "すべてのメモ" }], notes: [] };
         
         let loggedInUser = "";
         let currentViewDate = new Date();
@@ -721,28 +727,60 @@
         let currentSelectedNoteId = null;
         let autoSaveTimer = null;
 
+        // ログイン処理（どんな文字が入力されてもユーザー作成＆状態記憶）
         document.getElementById("loginBtn").addEventListener("click", () => {
             const key = document.getElementById("loginKey").value.trim();
-            if (SECRETS[key]) {
-                loggedInUser = SECRETS[key];
-                document.getElementById("currentUser").innerText = `👤 ${loggedInUser}`;
-                document.getElementById("loginSection").classList.add("hidden");
-                document.getElementById("mainSection").classList.remove("hidden");
-                initPremiumCalendarApp();
+            if (key !== "") {
+                executeLogin(key);
+                localStorage.setItem(STORAGE_KEY_SESSION, key); 
             } else {
-                document.getElementById("loginError").innerText = "認証キーが正しくありません。";
+                document.getElementById("loginError").innerText = "名前またはキーを入力してください。";
             }
         });
 
+        // 実際のログイン実行＆そのユーザー専用のデータをローカルストレージから読み込む処理
+        function executeLogin(userName) {
+            loggedInUser = userName;
+            document.getElementById("currentUser").innerText = loggedInUser;
+
+            // 💡 ユーザー名を含んだ固有のキーでデータを引っ張ってくる（これで完全に分離されます！）
+            const userDiaryKey = `winucalendar_v3_diaryData_${loggedInUser}`;
+            const userNotesKey = `winucalendar_v3_notesData_${loggedInUser}`;
+
+            diaryData = JSON.parse(localStorage.getItem(userDiaryKey)) || {};
+            notesData = JSON.parse(localStorage.getItem(userNotesKey)) || {
+                folders: [{ id: "f-all", name: "すべてのメモ" }],
+                notes: []
+            };
+
+            document.getElementById("loginSection").classList.add("hidden");
+            document.getElementById("mainSection").classList.remove("hidden");
+            initPremiumCalendarApp();
+        }
+
+        // ログアウト処理
         document.getElementById("logoutBtn").addEventListener("click", () => {
             loggedInUser = "";
+            localStorage.removeItem(STORAGE_KEY_SESSION); 
             document.getElementById("loginKey").value = "";
             document.getElementById("loginError").innerText = "";
             document.getElementById("mainSection").classList.add("hidden");
             document.getElementById("loginSection").classList.remove("hidden");
         });
-        // 手帳アプリ全体の描画初期化
+
+        // 🚀 ページを開いた瞬間に自動ログインをチェック
+        window.addEventListener("DOMContentLoaded", () => {
+            const savedUser = localStorage.getItem(STORAGE_KEY_SESSION);
+            if (savedUser) {
+                executeLogin(savedUser); 
+            }
+        });
+
+        // 手帳アプリ全体の描画初期化（WELCOME下の名前表示を連動）
         function initPremiumCalendarApp() {
+            // WELCOMEの下のh2要素に、ログインしたユーザー名を代入して表示させる
+            document.getElementById("currentUser").innerText = loggedInUser;
+            
             renderCalendarGrid();
             renderFolderList();
             renderNoteList();
@@ -810,7 +848,7 @@
             }
         }
 
-        // 📅 日本の固定祝日の簡易判定ロジック（c-s.h.js 相当）
+        // 📅 日本の固定祝日の簡易判定ロジック
         function checkHolidayName(year, month, date) {
             if (month === 0 && date === 1) return "元日";
             if (month === 1 && date === 11) return "建国記念の日";
@@ -824,6 +862,7 @@
             if (month === 10 && date === 23) return "勤労感謝の日";
             return "";
         }
+
         // 📅 カレンダーの日付セルを個別に組み立てて配置する関数
         function createDayCell(year, month, date, isOtherMonth) {
             const grid = document.getElementById("calendarGrid");
@@ -831,7 +870,6 @@
             cell.className = "calendar-day-cell";
             if (isOtherMonth) cell.classList.add("other-month");
 
-            // 今日の日付のセルに枠線ハイライトを付与
             const today = new Date();
             if (!isOtherMonth && year === today.getFullYear() && month === today.getMonth() && date === today.getDate()) {
                 cell.classList.add("today");
@@ -841,14 +879,12 @@
             numLabel.innerText = date;
             cell.appendChild(numLabel);
 
-            // ローカルストレージ検索用の固有日付キー（例: "2026-02-11"）
             const dateKey = `${year}-${(month + 1).toString().padStart(2, '0')}-${date.toString().padStart(2, '0')}`;
 
-            // 保存データに予定がある場合、マス目の中にテキストの1行プレビューを表示
             if (diaryData[dateKey] && diaryData[dateKey].schedule) {
                 const schedList = document.createElement("div");
                 schedList.className = "cell-schedule-list";
-                schedList.innerText = diaryData[dateKey].schedule.split("\n")[0];
+                schedList.innerText = diaryData[dateKey].schedule.split("\n")[0]; // 1行目のみプレビュー
                 cell.appendChild(schedList);
             }
 
@@ -873,7 +909,7 @@
             document.getElementById("memoModal").classList.remove("hidden");
         }
 
-        // モーダルの「戻る」ボタンが押された際にデータを永続保存して閉じる処理
+        // 🛠️ 改善：モーダルの「戻る」ボタンが押された際に正常に保存して閉じる処理
         document.getElementById("backModalBtn").addEventListener("click", () => {
             if (!currentEditingDateKey) return;
 
@@ -887,13 +923,17 @@
                 delete diaryData[currentEditingDateKey];
             }
 
-            localStorage.setItem(STORAGE_KEY_DIARY, JSON.stringify(diaryData));
+            // 💡 ログインユーザー専用の固有キーで日記データを保存
+            const userDiaryKey = `winucalendar_v3_diaryData_${loggedInUser}`;
+            localStorage.setItem(userDiaryKey, JSON.stringify(diaryData));
+            
+            // 完全にモーダルを非表示にする
             document.getElementById("memoModal").classList.add("hidden");
             renderCalendarGrid();
         });
 
         // ==========================================
-        // 📂 メモ帳機能：フォルダ階層の制御（c-s.r.js 統合相当）
+        // 📂 メモ帳機能：フォルダ階層の制御
         // ==========================================
         document.getElementById("addFolderBtn").addEventListener("click", () => {
             const folderName = prompt("新しいフォルダ名を入力してください：");
@@ -905,7 +945,7 @@
             };
 
             notesData.folders.push(newFolder);
-            saveNotesData();
+            saveNotesData(); // ユーザー個別のセーブ関数を呼び出し
             renderFolderList();
         });
 
