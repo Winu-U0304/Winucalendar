@@ -3,102 +3,468 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>プレミアム手帳＆メモ</title>
-    <link rel="stylesheet" href="c-style.css">
-    <link rel="icon" href="calendar.png">
+    <title>Super Multi App & Premium Diary</title>
+    <style>
+        /* システム共通変数の定義 */
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #ffffff;
+            --accent-color: #ff9f0a;
+            --font-family: 'Helvetica Neue', Arial, sans-serif;
+            --border-color: #444;
+            --bg-input: #333;
+            --text-main: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* 設定エリア */
+        header.sys-header {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+
+        .settings-panel {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .setting-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        select, input[type="color"] {
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-input);
+            color: var(--text-color);
+        }
+
+        input[type="color"] {
+            height: 38px;
+            padding: 2px;
+            cursor: pointer;
+        }
+
+        /* メインアプリの切り替えタブ */
+        .tabs {
+            display: flex;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            gap: 5px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 75px;
+            padding: 10px;
+            background: #333;
+            color: #ccc;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: var(--accent-color);
+            color: #000;
+        }
+
+        /* アプリ用カード基盤 */
+        .app-card {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 600px;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: none;
+        }
+
+        .app-card.active {
+            display: block;
+        }
+
+        /* 時計・タイマーの文字表示 */
+        .display-time {
+            font-size: 56px;
+            font-weight: 800;
+            margin: 20px 0;
+            letter-spacing: 1px;
+            font-variant-numeric: tabular-nums;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .date-display {
+            font-size: 20px;
+            font-weight: 600;
+            color: #aaa;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .input-group {
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+        .input-group input {
+            width: 70px;
+            padding: 10px;
+            text-align: center;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-input);
+            color: #fff;
+            font-size: 18px;
+        }
+
+        /* 共通ボタン設定 */
+        button.btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 15px;
+            background: #444;
+            color: #fff;
+            transition: opacity 0.2s;
+        }
+        button.btn:active { opacity: 0.7; }
+        button.btn-primary { background: var(--accent-color); color: #000; }
+
+        /* 電卓専用スタイル */
+        .calc-screen {
+            width: 100%; height: 60px; background: #000; color: #fff;
+            text-align: right; font-size: 32px; padding: 10px;
+            border-radius: 8px; margin-bottom: 15px; border: none;
+        }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .calc-grid button {
+            padding: 18px; font-size: 20px; font-weight: bold;
+            border: none; border-radius: 50%; cursor: pointer; background: #333; color: #fff;
+        }
+        .calc-grid button.operator { background: var(--accent-color); color: #000; }
+        .calc-grid button.fn { background: #a5a5a5; color: #000; }
+
+        /* 📅 Winucalendar 独自デザインの完全統合 */
+        .hidden { display: none !important; }
+        .login-wrapper { padding: 10px; text-align: center; }
+        .premium-login-card { background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); }
+        .login-title { font-size: 22px; margin-bottom: 10px; letter-spacing: 1px; color: var(--accent-color); }
+        .login-sub-text { font-size: 13px; color: #aaa; margin-bottom: 15px; }
+        .login-box { display: flex; gap: 8px; justify-content: center; }
+        .login-box input { padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: #121212; color: #fff; flex: 1; max-width: 240px; }
+        .login-box button { padding: 10px 16px; background: var(--accent-color); border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .error-msg { color: #ff453a; font-size: 12px; margin-top: 8px; }
+
+        /* 手帳メインエリア */
+        .app-container { width: 100%; text-align: left; }
+        .app-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+        .welcome-neon { font-size: 11px; color: var(--accent-color); font-weight: bold; display: block; }
+        #currentUser { font-size: 16px; font-weight: bold; }
+        
+        /* 手帳内タブ */
+        .tab-switcher { display: flex; background: #121212; padding: 4px; border-radius: 8px; gap: 4px; }
+        .tab-switcher .tab-btn { min-width: auto; padding: 6px 12px; font-size: 12px; border-radius: 6px; background: transparent; color: #888; }
+        .tab-switcher .tab-btn.active { background: var(--card-bg); color: var(--text-color); }
+        .header-controls { display: flex; gap: 6px; }
+        .header-controls button { padding: 6px 10px; font-size: 12px; background: #333; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+
+        /* スライドビューポート */
+        .slide-viewport { width: 100%; overflow: hidden; position: relative; border-radius: 8px; background: #121212; }
+        .slide-container { display: flex; width: 200%; transition: transform 0.4s ease-in-out; }
+        .slide-page { width: 50%; padding: 12px; }
+
+        /* カレンダー表示 */
+        .calendar-wrapper { display: flex; flex-direction: column; gap: 15px; }
+        @media (min-width: 480px) { .calendar-wrapper { flex-direction: row; } }
+        .calendar-sidebar { text-align: center; padding: 10px; min-width: 110px; background: var(--card-bg); border-radius: 8px; display: flex; flex-direction: column; justify-content: center; }
+        .month-eng { font-size: 14px; text-transform: uppercase; color: var(--accent-color); }
+        .year-num { font-size: 12px; color: #888; }
+        .month-big { font-size: 42px; font-weight: 900; margin: 5px 0; }
+        .nav-buttons { display: flex; gap: 5px; justify-content: center; }
+        .nav-buttons button { padding: 4px 10px; background: #333; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+        
+        .calendar-body { flex: 1; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+        .calendar-day-cell { background: var(--card-bg); min-height: 55px; padding: 4px; border-radius: 6px; font-size: 11px; position: relative; cursor: pointer; border: 1px solid transparent; display: flex; flex-direction: column; justify-content: space-between; }
+        .calendar-day-cell:hover { border-color: var(--accent-color); }
+        .calendar-day-cell.today { border: 2px solid var(--accent-color); }
+        .calendar-day-cell.other-month { opacity: 0.3; }
+        .day-header-label { text-align: center; font-weight: bold; font-size: 11px; color: #888; padding: 4px 0; }
+        .cell-schedule-list { font-size: 9px; color: var(--accent-color); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; }
+
+        /* 📱 iPhone風本格メモ帳のデザイン */
+        .notes-app-wrapper { display: flex; height: 400px; background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); }
+        .notes-sidebar, .notes-list-pane, .notes-editor-pane { display: flex; flex-direction: column; height: 100%; padding: 10px; }
+        .notes-sidebar { width: 30%; border-right: 1px solid var(--border-color); background: #1a1a1a; }
+        .notes-list-pane { width: 35%; border-right: 1px solid var(--border-color); background: #1e1e1e; }
+        .notes-editor-pane { width: 35%; background: #222; }
+        .pane-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); margin-bottom: 8px; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); margin-bottom: 8px; }
+        .icon-btn { background: transparent; border: none; font-size: 16px; cursor: pointer; }
+        .folder-list, .note-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+        .folder-item, .note-item { padding: 8px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: background 0.2s; }
+        .folder-item:hover, .note-item:hover { background: #333; }
+        .folder-item.active, .note-item.active { background: var(--accent-color); color: #000; font-weight: bold; }
+        .editor-body { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .note-title-field { background: transparent; border: none; color: #fff; font-size: 16px; font-weight: bold; outline: none; padding: 4px 0; border-bottom: 1px solid #333; }
+        .note-body-field { background: transparent; border: none; color: #fff; font-size: 14px; outline: none; resize: none; flex: 1; line-height: 1.5; }
+        .saved-status { font-size: 11px; color: #888; }
+        .mobile-only-btn { display: none; padding: 4px 8px; font-size: 11px; background: #333; color: #fff; border: none; border-radius: 4px; }
+
+        @media (max-width: 540px) {
+            .notes-sidebar { width: 100%; }
+            .notes-list-pane { width: 100%; display: none; }
+            .notes-editor-pane { width: 100%; display: none; }
+            .mobile-only-btn { display: inline-block; }
+        }
+
+        /* 📌 日記モーダル */
+        .modal-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 15px; }
+        .modal-zoom-container { background: var(--card-bg); width: 100%; max-width: 460px; border-radius: 14px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .back-btn { padding: 6px 12px; background: #333; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; }
+        .modal-body-vertical-layout { display: flex; flex-direction: column; gap: 12px; text-align: left; }
+        .modal-body-vertical-layout label { font-size: 12px; color: var(--accent-color); font-weight: bold; display: block; margin-bottom: 4px; }
+        .diary-title-section input, .diary-main-section textarea { width: 100%; padding: 10px; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 14px; outline: none; box-sizing: border-box; }
+        .diary-main-section textarea { height: 100px; resize: none; }
+        .holiday-name { font-size: 12px; color: #ff453a; font-weight: bold; }
+    </style>
 </head>
-<body class="bg-theme">
-    <!-- 🚪 ログイン画面 -->
-    <div id="loginSection" class="login-wrapper">
-        <div class="premium-login-card">
-            <h1 class="login-title">🔒 DIARY & NOTES</h1>
-            <p class="login-sub-text">クラウド暗号化ファイルにアクセスするため、専用の認証キーを入力してください。</p>
-            <div class="login-box"><input type="password" id="loginKey" placeholder="固有の認証キーを入力..."><button id="loginBtn">ログイン</button></div>
-            <p id="loginError" class="error-msg"></p>
+<body>
+    <header class="sys-header">
+        <div class="settings-panel">
+            <div class="setting-item">
+                <label id="lbl-theme">モード</label>
+                <select id="theme-select" onchange="changeTheme(this.value)">
+                    <option value="dark">Dark</option>
+                    <option value="light">Light</option>
+                </select>
+            </div>
+            <div class="setting-item">
+                <label id="lbl-lang">言語</label>
+                <select id="lang-select" onchange="changeLanguage(this.value)">
+                    <option value="ja">日本語</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+            <div class="setting-item">
+                <label id="lbl-bg">背景色</label>
+                <input type="color" id="bg-color-picker" value="#121212" oninput="updateColors()">
+            </div>
+            <div class="setting-item">
+                <label id="lbl-text">文字色</label>
+                <input type="color" id="text-color-picker" value="#ffffff" oninput="updateColors()">
+            </div>
+            <div class="setting-item" style="grid-column: span 2;">
+                <label id="lbl-font">フォント</label>
+                <select id="font-select" onchange="changeFont(this.value)">
+                    <option value="'Helvetica Neue', Arial, sans-serif">Standard</option>
+                    <option value="'Courier New', Courier, monospace">Monospace</option>
+                    <option value="'Georgia', serif">Elegant Serif</option>
+                </select>
+            </div>
         </div>
+    </header>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('clock', this)" id="tab-clock">時計</button>
+        <button class="tab-btn" onclick="switchTab('diary', this)" id="tab-diary">手帳</button>
+        <button class="tab-btn" onclick="switchTab('sw', this)" id="tab-sw">SW</button>
+        <button class="tab-btn" onclick="switchTab('timer', this)" id="tab-timer">タイマー</button>
+        <button class="tab-btn" onclick="switchTab('alarm', this)" id="tab-alarm">アラーム</button>
+        <button class="tab-btn" onclick="switchTab('calc', this)" id="tab-calc">電卓</button>
+    </div>
+    <!-- 1. 時計 -->
+    <div id="clock" class="app-card active">
+        <div class="date-display" id="clock-date">----/--/--</div>
+        <div class="display-time" id="clock-time">00:00:00</div>
     </div>
 
-    <!-- 📅 メイン画面 -->
-    <div id="mainSection" class="app-container hidden">
-        <header class="app-header">
-            <div class="welcome-area"><span class="welcome-neon">WELCOME</span><h2 id="currentUser"></h2></div>
-            <!-- 🎛️ タブ切り替えボタン -->
-            <div class="tab-switcher">
-                <button id="tabCalendarBtn" class="tab-btn active">カレンダー・予定</button>
-                <button id="tabNotesBtn" class="tab-btn">メモ帳</button>
-            </div>
-            <div class="header-controls">
-                <button id="themeToggleBtn" class="theme-toggle-btn">🌙 モード切替</button>
-                <button id="logoutBtn">LOGOUT</button>
-            </div>
-        </header>
-
-        <!-- 🔄 左右滑らかスライド用コンテナ -->
-        <div class="slide-viewport">
-            <div class="slide-container" id="slideContainer">
-                
-                <!-- 【ページ1】📅 カレンダーエリア -->
-                <div class="slide-page" id="pageCalendar">
-                    <div class="calendar-wrapper">
-                        <div class="calendar-sidebar">
-                            <div id="calendarMonthEnglish" class="month-eng">February</div>
-                            <div id="calendarYear" class="year-num">2026</div>
-                            <div id="calendarMonthNumber" class="month-big">2</div>
-                            <div class="nav-buttons"><button id="prevMonthBtn">◀</button><button id="nextMonthBtn">▶</button></div>
-                        </div>
-                        <div class="calendar-body"><div class="calendar-grid" id="calendarGrid"></div></div>
-                    </div>
+    <!-- 2. 手帳＆メモ（Winucalendar統合） -->
+    <div id="diary" class="app-card">
+        <!-- 🚪 ログイン画面 -->
+        <div id="loginSection" class="login-wrapper">
+            <div class="premium-login-card">
+                <h1 class="login-title">🔒 DIARY & NOTES</h1>
+                <p class="login-sub-text">クラウド暗号化ファイルにアクセスするため、専用の認証キーを入力してください。</p>
+                <div class="login-box">
+                    <input type="password" id="loginKey" placeholder="固有の認証キーを入力...">
+                    <button id="loginBtn">ログイン</button>
                 </div>
+                <p id="loginError" class="error-msg"></p>
+            </div>
+        </div>
 
-                <!-- 【ページ2】📱 iPhone風本格メモ帳エリア -->
-                <div class="slide-page" id="pageNotes">
-                    <div class="notes-app-wrapper">
-                        <!-- 📂 左側：フォルダ階層 -->
-                        <div class="notes-sidebar" id="notesSidebar">
-                            <div class="sidebar-header"><h3>フォルダ</h3><button id="addFolderBtn" class="icon-btn">➕</button></div>
-                            <div class="folder-list" id="folderList"></div>
+        <!-- 📅 メイン画面 -->
+        <div id="mainSection" class="app-container hidden">
+            <header class="app-header">
+                <div class="welcome-area"><span class="welcome-neon">WELCOME</span><h2 id="currentUser"></h2></div>
+                <div class="tab-switcher">
+                    <button id="tabCalendarBtn" class="tab-btn active">カレンダー・予定</button>
+                    <button id="tabNotesBtn" class="tab-btn">メモ帳</button>
+                </div>
+                <div class="header-controls">
+                    <button id="logoutBtn">LOGOUT</button>
+                </div>
+            </header>
+
+            <!-- 🔄 左右滑らかスライド用コンテナ -->
+            <div class="slide-viewport">
+                <div class="slide-container" id="slideContainer">
+                    
+                    <!-- 【ページ1】📅 カレンダーエリア -->
+                    <div class="slide-page" id="pageCalendar">
+                        <div class="calendar-wrapper">
+                            <div class="calendar-sidebar">
+                                <div id="calendarMonthEnglish" class="month-eng">February</div>
+                                <div id="calendarYear" class="year-num">2026</div>
+                                <div id="calendarMonthNumber" class="month-big">2</div>
+                                <div class="nav-buttons"><button id="prevMonthBtn">◀</button><button id="nextMonthBtn">▶</button></div>
+                            </div>
+                            <div class="calendar-body"><div class="calendar-grid" id="calendarGrid"></div></div>
                         </div>
-                        <!-- 📝 中央：メモ一覧 -->
-                        <div class="notes-list-pane" id="notesListPane">
-                            <div class="pane-header"><button id="backToFoldersBtn" class="mobile-only-btn">◀ フォルダ</button><h3 id="currentFolderName">すべてのメモ</h3><button id="addNoteBtn" class="icon-btn">📝</button></div>
-                            <div class="note-list" id="noteList"></div>
-                        </div>
-                        <!-- 📖 右側：エディタ本体 -->
-                        <div class="notes-editor-pane" id="notesEditorPane">
-                            <div class="pane-header"><button id="backToNotesListBtn" class="mobile-only-btn">◀ 一覧</button><span id="noteSavedStatus" class="saved-status">自動保存済</span></div>
-                            <div class="editor-body">
-                                <input type="text" id="noteTitleInput" placeholder="タイトルなし" class="note-title-field">
-                                <textarea id="noteBodyInput" placeholder="ここにメモを入力..." class="note-body-field"></textarea>
+                    </div>
+
+                    <!-- 【ページ2】📱 iPhone風本格メモ帳エリア -->
+                    <div class="slide-page" id="pageNotes">
+                        <div class="notes-app-wrapper">
+                            <!-- 📂 左側：フォルダ階層 -->
+                            <div class="notes-sidebar" id="notesSidebar">
+                                <div class="sidebar-header"><h3>フォルダ</h3><button id="addFolderBtn" class="icon-btn">➕</button></div>
+                                <div class="folder-list" id="folderList"></div>
+                            </div>
+                            <!-- 📝 中央：メモ一覧 -->
+                            <div class="notes-list-pane" id="notesListPane">
+                                <div class="pane-header"><button id="backToFoldersBtn" class="mobile-only-btn">◀ フォルダ</button><h3 id="currentFolderName">すべてのメモ</h3><button id="addNoteBtn" class="icon-btn">📝</button></div>
+                                <div class="note-list" id="noteList"></div>
+                            </div>
+                            <!-- 📖 右側：エディタ本体 -->
+                            <div class="notes-editor-pane" id="notesEditorPane">
+                                <div class="pane-header"><button id="backToNotesListBtn" class="mobile-only-btn">◀ 一覧</button><span id="noteSavedStatus" class="saved-status">自動保存済</span></div>
+                                <div class="editor-body">
+                                    <input type="text" id="noteTitleInput" placeholder="タイトルなし" class="note-title-field">
+                                    <textarea id="noteBodyInput" placeholder="ここにメモを入力..." class="note-body-field"></textarea>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
+                </div>
             </div>
         </div>
     </div>
+    <!-- 3. ストップウォッチ -->
+    <div id="sw" class="app-card">
+        <div class="display-time" id="sw-time">00:00.00</div>
+        <button class="btn btn-primary" id="sw-start" onclick="toggleSW()">スタート</button>
+        <button class="btn" id="sw-reset" onclick="resetSW()">リセット</button>
+    </div>
 
-<!-- 🌟🌟🌟 ここまで前半（下の後半コードへ続く） 🌟🌟🌟 -->
-<!-- 🌟🌟🌟 ここから後半（前半のすぐ下に貼り付け） 🌟🌟🌟 -->
+    <!-- 4. タイマー -->
+    <div id="timer" class="app-card">
+        <div class="input-group" id="timer-inputs">
+            <input type="number" id="timer-h" min="0" max="23" value="0" placeholder="時">
+            <input type="number" id="timer-m" min="0" max="59" value="3" placeholder="分">
+            <input type="number" id="timer-s" min="0" max="59" value="0" placeholder="秒">
+        </div>
+        <div class="display-time" id="timer-time" style="display:none;">00:00:00</div>
+        <button class="btn btn-primary" id="timer-start" onclick="toggleTimer()">スタート</button>
+        <button class="btn" id="timer-reset" onclick="resetTimer()">リセット</button>
+    </div>
 
-    <!-- 日記・予定モーダル（すべての入力パーツを安全に完全ドッキングした決定版） -->
+    <!-- 5. アラーム -->
+    <div id="alarm" class="app-card">
+        <div class="input-group">
+            <input type="time" id="alarm-time" style="width:160px; font-size:20px; padding:8px;">
+        </div>
+        <button class="btn btn-primary" id="alarm-set" onclick="setAlarm()">セット</button>
+        <button class="btn" id="alarm-clear" onclick="clearAlarm()">解除</button>
+        <div id="alarm-status" style="margin-top:15px; font-weight:bold; color:var(--accent-color);"></div>
+    </div>
+
+    <!-- 6. 電卓 -->
+    <div id="calc" class="app-card">
+        <input type="text" class="calc-screen" id="calc-screen" readonly value="0">
+        <div class="calc-grid">
+            <button class="fn" onclick="clearCalc()">C</button>
+            <button class="fn" onclick="inputCalc('(')">(</button>
+            <button class="fn" onclick="inputCalc(')')">)</button>
+            <button class="operator" onclick="inputCalc('/')">÷</button>
+            <button onclick="inputCalc('7')">7</button>
+            <button onclick="inputCalc('8')">8</button>
+            <button onclick="inputCalc('9')">9</button>
+            <button class="operator" onclick="inputCalc('*')">×</button>
+            <button onclick="inputCalc('4')">4</button>
+            <button onclick="inputCalc('5')">5</button>
+            <button onclick="inputCalc('6')">6</button>
+            <button class="operator" onclick="inputCalc('-')">-</button>
+            <button onclick="inputCalc('1')">1</button>
+            <button onclick="inputCalc('2')">2</button>
+            <button onclick="inputCalc('3')">3</button>
+            <button class="operator" onclick="inputCalc('+')">+</button>
+            <button onclick="inputCalc('0')">0</button>
+            <button onclick="inputCalc('.')">.</button>
+            <button onclick="backspaceCalc()">⌫</button>
+            <button class="operator" onclick="calculateResult()">=</button>
+        </div>
+    </div>
+
+    <!-- 日記・予定モーダル -->
     <div id="memoModal" class="modal-wrapper hidden">
         <div class="modal-zoom-container">
-            <div class="modal-header"><button id="backModalBtn" class="back-btn">◀ 戻る</button><h3 id="modalDateTitle">2026 / 02 / 11</h3><span id="modalHolidayLabel" class="holiday-name"></span></div>
+            <div class="modal-header">
+                <button id="backModalBtn" class="back-btn">◀ 戻る</button>
+                <h3 id="modalDateTitle">2026 / 02 / 11</h3>
+                <span id="modalHolidayLabel" class="holiday-name"></span>
+            </div>
             <div class="modal-body-vertical-layout">
-                <!-- ① 📖 日記のタイトル（最大7文字） -->
                 <div class="diary-title-section">
                     <label>📖 日記のタイトル (7文字以下)</label>
                     <input type="text" id="diaryInput" placeholder="タイトルを入力（7文字まで）..." maxlength="7">
                 </div>
-                
-                <!-- ② 📅 当日の予定記入欄（カレンダーマスの中に1行ずつ縦に並ぶやつ） -->
                 <div class="diary-title-section">
                     <label>📅 当日の予定 (改行で複数入力可)</label>
-                    <textarea id="scheduleInput" placeholder="13:00 ミーティング&#13;19:00 ディナー..." style="width: 100%; height: 60px; padding: 10px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 14px; outline: none; background: var(--bg-input); color: var(--text-main); font-family: inherit; resize: none; box-sizing: border-box;"></textarea>
+                    <textarea id="scheduleInput" placeholder="13:00 ミーティング&#10;19:00 ディナー..." style="width: 100%; height: 60px; padding: 10px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 14px; outline: none; background: var(--bg-input); color: var(--text-main); font-family: inherit; resize: none; box-sizing: border-box;"></textarea>
                 </div>
-                
-                <!-- ③ 📌 日記本文 -->
                 <div class="diary-main-section">
                     <label>📌 日記本文</label>
                     <textarea id="memoInput" placeholder="今日の日記を記入..."></textarea>
@@ -107,9 +473,614 @@
         </div>
     </div>
 
-    <script src="c-s.i.js"></script>
-    <script src="c-s.h.js"></script>
-    <script src="c-s.r.js"></script>
-    <script src="c-s.m.js"></script>
+    <script>
+        // 総合多言語リソース
+        const langData = {
+            ja: {
+                theme: "モード", lang: "言語", bg: "背景色", text: "文字色", font: "フォント",
+                clock: "時計", diary: "手帳", sw: "ストップウォッチ", timer: "タイマー", alarm: "アラーム", calc: "電卓",
+                start: "スタート", stop: "ストップ", reset: "リセット", set: "セット", clear: "解除",
+                alarm_set: "アラーム設定中: ", alarm_none: "未設定", alarm_ring: "⏰ 時間です！"
+            },
+            en: {
+                theme: "Theme", lang: "Language", bg: "Background", text: "Text Color", font: "Font",
+                clock: "Clock", diary: "Diary", sw: "Stopwatch", timer: "Timer", alarm: "Alarm", calc: "Calc",
+                start: "Start", stop: "Stop", reset: "Reset", set: "Set", clear: "Clear",
+                alarm_set: "Alarm set for: ", alarm_none: "Not set", alarm_ring: "⏰ Time's up!"
+            }
+        };
+        let currentLang = 'ja';
+
+        // アプリ画面切り替えシステム
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.app-card').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // 共通カラーパレット切り替え
+        function changeTheme(theme) {
+            const isDark = theme === 'dark';
+            const bg = isDark ? '#121212' : '#f0f0f0';
+            const text = isDark ? '#ffffff' : '#000000';
+            const card = isDark ? '#1e1e1e' : '#ffffff';
+            
+            document.getElementById('bg-color-picker').value = bg;
+            document.getElementById('text-color-picker').value = text;
+            document.documentElement.style.setProperty('--card-bg', card);
+            updateColors();
+        }
+        // 画面の配色（背景色・文字色）をリアルタイムに更新する関数
+        function updateColors() {
+            const bg = document.getElementById('bg-color-picker').value;
+            const text = document.getElementById('text-color-picker').value;
+            document.documentElement.style.setProperty('--bg-color', bg);
+            document.documentElement.style.setProperty('--text-color', text);
+            document.documentElement.style.setProperty('--text-main', text);
+        }
+
+        // 選択されたフォントスタイルをシステム全体に適用する関数
+        function changeFont(font) {
+            document.documentElement.style.setProperty('--font-family', font);
+        }
+
+        // 画面上のテキストを一括で日本語または英語に切り替える関数
+        function changeLanguage(lang) {
+            currentLang = lang;
+            const d = langData[lang];
+            document.getElementById('lbl-theme').innerText = d.theme;
+            document.getElementById('lbl-lang').innerText = d.lang;
+            document.getElementById('lbl-bg').innerText = d.bg;
+            document.getElementById('lbl-text').innerText = d.text;
+            document.getElementById('lbl-font').innerText = d.font;
+            
+            document.getElementById('tab-clock').innerText = d.clock;
+            document.getElementById('tab-diary').innerText = d.diary;
+            document.getElementById('tab-sw').innerText = d.sw;
+            document.getElementById('tab-timer').innerText = d.timer;
+            document.getElementById('tab-alarm').innerText = d.alarm;
+            document.getElementById('tab-calc').innerText = d.calc;
+
+            updateButtonLabels();
+        }
+
+        // 開始・停止など、状況に応じて変化するボタンのラベルを更新
+        function updateButtonLabels() {
+            const d = langData[currentLang];
+            document.getElementById('sw-start').innerText = swInterval ? d.stop : d.start;
+            document.getElementById('sw-reset').innerText = d.reset;
+            document.getElementById('timer-start').innerText = timerInterval ? d.stop : d.start;
+            document.getElementById('timer-reset').innerText = d.reset;
+            document.getElementById('alarm-set').innerText = d.set;
+            document.getElementById('alarm-clear').innerText = d.clear;
+            updateAlarmStatusDisplay();
+        }
+
+        // ⏰ 1. 時計機能（年月日、曜日、秒数をすっきり表示するメインループ）
+        setInterval(() => {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const date = now.getDate();
+            const dayList = currentLang === 'ja' ? ['日', '月', '火', '水', '木', '金', '土'] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const day = dayList[now.getDay()];
+            
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+
+            const dateStr = currentLang === 'ja' ? `${year}年${month}月${date}日 (${day})` : `${year}/${month}/${date} (${day})`;
+            
+            document.getElementById('clock-date').innerText = dateStr;
+            document.getElementById('clock-time').innerText = `${hours}:${minutes}:${seconds}`;
+            checkAlarm(now);
+        }, 1000);
+
+        // ⏱️ 2. ストップウォッチ機能の制御ロジック
+        let swInterval = null, swElapsedTime = 0, swStartTime = 0;
+        function toggleSW() {
+            if (swInterval) {
+                clearInterval(swInterval);
+                swElapsedTime += Date.now() - swStartTime;
+                swInterval = null;
+            } else {
+                swStartTime = Date.now();
+                swInterval = setInterval(updateSW, 10);
+            }
+            updateButtonLabels();
+        }
+
+        function resetSW() {
+            clearInterval(swInterval);
+            swInterval = null;
+            swElapsedTime = 0;
+            document.getElementById('sw-time').innerText = "00:00.00";
+            updateButtonLabels();
+        }
+
+        function updateSW() {
+            const total = swElapsedTime + (Date.now() - swStartTime);
+            const ms = Math.floor((total % 1000) / 10).toString().padStart(2, '0');
+            const s = Math.floor((total / 1000) % 60).toString().padStart(2, '0');
+            const m = Math.floor(total / 60000).toString().padStart(2, '0');
+            document.getElementById('sw-time').innerText = `${m}:${s}.${ms}`;
+        }
+        // ⏳ 3. タイマー機能のカウントダウン制御ロジック
+        let timerInterval = null, timerEndTime = 0, timerRemaining = 0;
+        function toggleTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerRemaining = timerEndTime - Date.now();
+                timerInterval = null;
+            } else {
+                if (timerRemaining <= 0) {
+                    const h = parseInt(document.getElementById('timer-h').value) || 0;
+                    const m = parseInt(document.getElementById('timer-m').value) || 0;
+                    const s = parseInt(document.getElementById('timer-s').value) || 0;
+                    timerRemaining = (h * 3600 + m * 60 + s) * 1000;
+                }
+                if (timerRemaining <= 0) return;
+                document.getElementById('timer-inputs').style.display = 'none';
+                document.getElementById('timer-time').style.display = 'block';
+                timerEndTime = Date.now() + timerRemaining;
+                timerInterval = setInterval(updateTimer, 100);
+            }
+            updateButtonLabels();
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            timerRemaining = 0;
+            document.getElementById('timer-inputs').style.display = 'flex';
+            document.getElementById('timer-time').style.display = 'none';
+            updateButtonLabels();
+        }
+
+        function updateTimer() {
+            const diff = timerEndTime - Date.now();
+            if (diff <= 0) {
+                resetTimer();
+                alert(langData[currentLang].alarm_ring);
+                return;
+            }
+            const s = Math.ceil(diff / 1000) % 60;
+            const m = Math.floor(diff / 60000) % 60;
+            const h = Math.floor(diff / 3600000);
+            document.getElementById('timer-time').innerText = 
+                `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }
+
+        // 🔔 4. アラーム機能の制御ロジック
+        let targetAlarmTime = null;
+        function setAlarm() {
+            const input = document.getElementById('alarm-time').value;
+            if (!input) return;
+            targetAlarmTime = input;
+            updateAlarmStatusDisplay();
+        }
+
+        function clearAlarm() {
+            targetAlarmTime = null;
+            updateAlarmStatusDisplay();
+        }
+
+        function updateAlarmStatusDisplay() {
+            const status = document.getElementById('alarm-status');
+            status.innerText = targetAlarmTime ? langData[currentLang].alarm_set + targetAlarmTime : langData[currentLang].alarm_none;
+        }
+
+        function checkAlarm(now) {
+            if (!targetAlarmTime) return;
+            const currentStr = now.toTimeString().slice(0, 5);
+            if (currentStr === targetAlarmTime) {
+                targetAlarmTime = null;
+                updateAlarmStatusDisplay();
+                alert(langData[currentLang].alarm_ring);
+            }
+        }
+
+        // 🧮 5. 電卓機能の制御ロジック
+        const screen = document.getElementById('calc-screen');
+        function clearCalc() { screen.value = '0'; }
+        function inputCalc(val) {
+            if (screen.value === '0' && !isNaN(val)) screen.value = val;
+            else screen.value += val;
+        }
+
+        function backspaceCalc() {
+            screen.value = screen.value.slice(0, -1) || '0';
+        }
+
+        function calculateResult() {
+            try {
+                const result = new Function(`return ${screen.value}`)();
+                screen.value = Number(result.toFixed(8)).toString();
+            } catch (e) {
+                screen.value = 'Error';
+            }
+        }
+
+        // ==========================================
+        // 📅 Winucalendar 手帳システム（c-s.i.js 統合相当）
+        // ==========================================
+        const SECRETS = { "winu": "管理者", "guest": "ゲストユーザー" };
+        const STORAGE_KEY_DIARY = "winucalendar_v3_diaryData";
+        const STORAGE_KEY_NOTES = "winucalendar_v3_notesData";
+        
+        let diaryData = JSON.parse(localStorage.getItem(STORAGE_KEY_DIARY)) || {};
+        let notesData = JSON.parse(localStorage.getItem(STORAGE_KEY_NOTES)) || {
+            folders: [{ id: "f-all", name: "すべてのメモ" }],
+            notes: []
+        };
+        
+        let loggedInUser = "";
+        let currentViewDate = new Date();
+        let currentSelectedFolderId = "f-all";
+        let currentSelectedNoteId = null;
+        let autoSaveTimer = null;
+
+        document.getElementById("loginBtn").addEventListener("click", () => {
+            const key = document.getElementById("loginKey").value.trim();
+            if (SECRETS[key]) {
+                loggedInUser = SECRETS[key];
+                document.getElementById("currentUser").innerText = `👤 ${loggedInUser}`;
+                document.getElementById("loginSection").classList.add("hidden");
+                document.getElementById("mainSection").classList.remove("hidden");
+                initPremiumCalendarApp();
+            } else {
+                document.getElementById("loginError").innerText = "認証キーが正しくありません。";
+            }
+        });
+
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            loggedInUser = "";
+            document.getElementById("loginKey").value = "";
+            document.getElementById("loginError").innerText = "";
+            document.getElementById("mainSection").classList.add("hidden");
+            document.getElementById("loginSection").classList.remove("hidden");
+        });
+        // 手帳アプリ全体の描画初期化
+        function initPremiumCalendarApp() {
+            renderCalendarGrid();
+            renderFolderList();
+            renderNoteList();
+        }
+
+        // カレンダーの月切り替えイベント登録
+        document.getElementById("prevMonthBtn").addEventListener("click", () => {
+            currentViewDate.setMonth(currentViewDate.getMonth() - 1);
+            renderCalendarGrid();
+        });
+
+        document.getElementById("nextMonthBtn").addEventListener("click", () => {
+            currentViewDate.setMonth(currentViewDate.getMonth() + 1);
+            renderCalendarGrid();
+        });
+
+        // カレンダー用の英語月名配列
+        const MONTH_NAMES_ENG = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        // 📅 カレンダーグリッドの動的生成メイン処理
+        function renderCalendarGrid() {
+            const grid = document.getElementById("calendarGrid");
+            grid.innerHTML = "";
+
+            const year = currentViewDate.getFullYear();
+            const month = currentViewDate.getMonth();
+
+            // サイドバー等の年月テキスト表示を更新
+            document.getElementById("calendarYear").innerText = year;
+            document.getElementById("calendarMonthNumber").innerText = month + 1;
+            document.getElementById("calendarMonthEnglish").innerText = MONTH_NAMES_ENG[month];
+
+            // 曜日ヘッダー行（日〜土）を生成
+            const daysOfWeek = ["日", "月", "火", "水", "木", "金", "土"];
+            daysOfWeek.forEach(day => {
+                const header = document.createElement("div");
+                header.className = "day-header-label";
+                header.innerText = day;
+                grid.appendChild(header);
+            });
+
+            // 当月の最初の日(1日)の曜日インデックスと、当月の総日数を取得
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const totalDays = new Date(year, month + 1, 0).getDate();
+            const prevTotalDays = new Date(year, month, 0).getDate();
+
+            // ① 前月の末尾の余りマスを埋める
+            for (let i = firstDayIndex - 1; i >= 0; i--) {
+                createDayCell(year, month - 1, prevTotalDays - i, true);
+            }
+
+            // ② 当月の日付マス（1日〜末日）を生成
+            for (let i = 1; i <= totalDays; i++) {
+                createDayCell(year, month, i, false);
+            }
+
+            // ③ 翌月の先頭の余りマスを埋めて、合計で綺麗に6週間分(42マス)にする
+            const currentCells = grid.children.length - 7;
+            const nextDaysNeeded = 42 - currentCells;
+            for (let i = 1; i <= nextDaysNeeded; i++) {
+                createDayCell(year, month + 1, i, true);
+            }
+        }
+
+        // 📅 日本の固定祝日の簡易判定ロジック（c-s.h.js 相当）
+        function checkHolidayName(year, month, date) {
+            if (month === 0 && date === 1) return "元日";
+            if (month === 1 && date === 11) return "建国記念の日";
+            if (month === 1 && date === 23) return "天皇誕生日";
+            if (month === 3 && date === 29) return "昭和の日";
+            if (month === 4 && date === 3) return "憲法記念日";
+            if (month === 4 && date === 4) return "みどりの日";
+            if (month === 4 && date === 5) return "こどもの日";
+            if (month === 7 && date === 11) return "山の日";
+            if (month === 10 && date === 3) return "文化の日";
+            if (month === 10 && date === 23) return "勤労感謝の日";
+            return "";
+        }
+        // 📅 カレンダーの日付セルを個別に組み立てて配置する関数
+        function createDayCell(year, month, date, isOtherMonth) {
+            const grid = document.getElementById("calendarGrid");
+            const cell = document.createElement("div");
+            cell.className = "calendar-day-cell";
+            if (isOtherMonth) cell.classList.add("other-month");
+
+            // 今日の日付のセルに枠線ハイライトを付与
+            const today = new Date();
+            if (!isOtherMonth && year === today.getFullYear() && month === today.getMonth() && date === today.getDate()) {
+                cell.classList.add("today");
+            }
+
+            const numLabel = document.createElement("div");
+            numLabel.innerText = date;
+            cell.appendChild(numLabel);
+
+            // ローカルストレージ検索用の固有日付キー（例: "2026-02-11"）
+            const dateKey = `${year}-${(month + 1).toString().padStart(2, '0')}-${date.toString().padStart(2, '0')}`;
+
+            // 保存データに予定がある場合、マス目の中にテキストの1行プレビューを表示
+            if (diaryData[dateKey] && diaryData[dateKey].schedule) {
+                const schedList = document.createElement("div");
+                schedList.className = "cell-schedule-list";
+                schedList.innerText = diaryData[dateKey].schedule.split("\n")[0];
+                cell.appendChild(schedList);
+            }
+
+            cell.addEventListener("click", () => openMemoModal(year, month, date, dateKey));
+            grid.appendChild(cell);
+        }
+
+        // 📌 日記・予定入力用のポップアップモーダルを開く処理
+        let currentEditingDateKey = "";
+        function openMemoModal(year, month, date, dateKey) {
+            currentEditingDateKey = dateKey;
+            document.getElementById("modalDateTitle").innerText = `${year} / ${(month + 1).toString().padStart(2, '0')} / ${date.toString().padStart(2, '0')}`;
+            
+            const holiday = checkHolidayName(year, month, date);
+            document.getElementById("modalHolidayLabel").innerText = holiday ? `🎉 ${holiday}` : "";
+
+            const saved = diaryData[dateKey] || { title: "", schedule: "", memo: "" };
+            document.getElementById("diaryInput").value = saved.title || "";
+            document.getElementById("scheduleInput").value = saved.schedule || "";
+            document.getElementById("memoInput").value = saved.memo || "";
+
+            document.getElementById("memoModal").classList.remove("hidden");
+        }
+
+        // モーダルの「戻る」ボタンが押された際にデータを永続保存して閉じる処理
+        document.getElementById("backModalBtn").addEventListener("click", () => {
+            if (!currentEditingDateKey) return;
+
+            const title = document.getElementById("diaryInput").value.trim();
+            const schedule = document.getElementById("scheduleInput").value.trim();
+            const memo = document.getElementById("memoInput").value.trim();
+
+            if (title || schedule || memo) {
+                diaryData[currentEditingDateKey] = { title, schedule, memo };
+            } else {
+                delete diaryData[currentEditingDateKey];
+            }
+
+            localStorage.setItem(STORAGE_KEY_DIARY, JSON.stringify(diaryData));
+            document.getElementById("memoModal").classList.add("hidden");
+            renderCalendarGrid();
+        });
+
+        // ==========================================
+        // 📂 メモ帳機能：フォルダ階層の制御（c-s.r.js 統合相当）
+        // ==========================================
+        document.getElementById("addFolderBtn").addEventListener("click", () => {
+            const folderName = prompt("新しいフォルダ名を入力してください：");
+            if (!folderName || !folderName.trim()) return;
+
+            const newFolder = {
+                id: "f-" + Date.now(),
+                name: folderName.trim()
+            };
+
+            notesData.folders.push(newFolder);
+            saveNotesData();
+            renderFolderList();
+        });
+
+        function renderFolderList() {
+            const list = document.getElementById("folderList");
+            list.innerHTML = "";
+
+            notesData.folders.forEach(folder => {
+                const item = document.createElement("div");
+                item.className = "folder-item";
+                if (folder.id === currentSelectedFolderId) item.classList.add("active");
+                item.innerText = `📁 ${folder.name}`;
+
+                item.addEventListener("click", () => {
+                    currentSelectedFolderId = folder.id;
+                    document.getElementById("currentFolderName").innerText = folder.name;
+                    currentSelectedNoteId = null;
+                    
+                    if (window.innerWidth <= 540) {
+                        document.getElementById("notesSidebar").style.display = "none";
+                        document.getElementById("notesListPane").style.display = "flex";
+                    }
+
+                    renderFolderList();
+                    renderNoteList();
+                    clearEditor();
+                });
+
+                list.appendChild(item);
+            });
+        }
+        // 📝 新しいメモを現在のフォルダ内に新規追加する処理
+        document.getElementById("addNoteBtn").addEventListener("click", () => {
+            const newNote = {
+                id: "n-" + Date.now(),
+                folderId: currentSelectedFolderId === "f-all" ? "f-all" : currentSelectedFolderId,
+                title: "",
+                body: "",
+                updatedAt: new Date().toISOString()
+            };
+
+            notesData.notes.unshift(newNote); // 常にリストの先頭に追加
+            saveNotesData();
+            currentSelectedNoteId = newNote.id;
+
+            // スマホ表示の時はメモ一覧を隠してエディタ（入力画面）を全画面表示
+            if (window.innerWidth <= 540) {
+                document.getElementById("notesListPane").style.display = "none";
+                document.getElementById("notesEditorPane").style.display = "flex";
+            }
+
+            renderNoteList();
+            openNoteInEditor(newNote);
+        });
+
+        // 📝 メモ一覧をフォルダに応じてフィルタリングして画面描画する処理
+        function renderNoteList() {
+            const list = document.getElementById("noteList");
+            list.innerHTML = "";
+
+            const filteredNotes = notesData.notes.filter(note => {
+                if (currentSelectedFolderId === "f-all") return true;
+                return note.folderId === currentSelectedFolderId;
+            });
+
+            filteredNotes.forEach(note => {
+                const item = document.createElement("div");
+                item.className = "note-item";
+                if (note.id === currentSelectedNoteId) item.classList.add("active");
+                
+                const displayTitle = note.title.trim() || "タイトルなし";
+                item.innerText = `📝 ${displayTitle}`;
+
+                item.addEventListener("click", () => {
+                    currentSelectedNoteId = note.id;
+                    
+                    if (window.innerWidth <= 540) {
+                        document.getElementById("notesListPane").style.display = "none";
+                        document.getElementById("notesEditorPane").style.display = "flex";
+                    }
+
+                    renderNoteList();
+                    openNoteInEditor(note);
+                });
+
+                list.appendChild(item);
+            });
+        }
+
+        // 📖 選択されたメモの内容をエディタの入力欄にセットする処理
+        function openNoteInEditor(note) {
+            document.getElementById("noteTitleInput").value = note.title;
+            document.getElementById("noteBodyInput").value = note.body;
+            document.getElementById("noteSavedStatus").innerText = "自動保存済";
+        }
+
+        // メモ帳のテキスト入力欄に自動保存イベントを登録
+        document.getElementById("noteTitleInput").addEventListener("input", triggerAutoSave);
+        document.getElementById("noteBodyInput").addEventListener("input", triggerAutoSave);
+
+        // ⌨️ キー入力が止まってから0.6秒後に自動でストレージに書き込む保存処理
+        function triggerAutoSave() {
+            document.getElementById("noteSavedStatus").innerText = "編集中心...";
+            clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(() => {
+                if (!currentSelectedNoteId) return;
+
+                const note = notesData.notes.find(n => n.id === currentSelectedNoteId);
+                if (note) {
+                    note.title = document.getElementById("noteTitleInput").value;
+                    note.body = document.getElementById("noteBodyInput").value;
+                    note.updatedAt = new Date().toISOString();
+                    
+                    saveNotesData();
+                    renderNoteList(); // 左側のリストのタイトル名もリアルタイムに同期
+                    document.getElementById("noteSavedStatus").innerText = "自動保存済";
+                }
+            }, 600);
+        }
+
+        function saveNotesData() {
+            localStorage.setItem(STORAGE_KEY_NOTES, JSON.stringify(notesData));
+        }
+
+        function clearEditor() {
+            document.getElementById("noteTitleInput").value = "";
+            document.getElementById("noteBodyInput").value = "";
+            document.getElementById("noteSavedStatus").innerText = "自動保存済";
+        }
+
+        // ==========================================
+        // 🔄 Winucalendar：左右滑らかスライド移動システム
+        // ==========================================
+        document.getElementById("tabCalendarBtn").addEventListener("click", function() {
+            switchInternalPage(0, this);
+        });
+
+        document.getElementById("tabNotesBtn").addEventListener("click", function() {
+            switchInternalPage(1, this);
+        });
+
+        function switchInternalPage(pageIndex, btnElement) {
+            document.getElementById("tabCalendarBtn").classList.remove("active");
+            document.getElementById("tabNotesBtn").classList.remove("active");
+            btnElement.classList.add("active");
+
+            // スライド用枠を横軸移動させてカレンダーとメモ帳を滑らかに切り替える
+            const container = document.getElementById("slideContainer");
+            container.style.transform = `translateX(-${pageIndex * 50}%)`;
+        }
+
+        // ==========================================
+        // 📱 スマホ専用：メモ帳内の画面戻り制御
+        // ==========================================
+        document.getElementById("backToFoldersBtn").addEventListener("click", () => {
+            document.getElementById("notesListPane").style.display = "none";
+            document.getElementById("notesSidebar").style.display = "flex";
+        });
+
+        document.getElementById("backToNotesListBtn").addEventListener("click", () => {
+            document.getElementById("notesEditorPane").style.display = "none";
+            document.getElementById("notesListPane").style.display = "flex";
+        });
+
+        window.addEventListener("resize", () => {
+            if (window.innerWidth > 540) {
+                document.getElementById("notesSidebar").style.display = "flex";
+                document.getElementById("notesListPane").style.display = "flex";
+                document.getElementById("notesEditorPane").style.display = "flex";
+            } else {
+                document.getElementById("notesSidebar").style.display = "flex";
+                document.getElementById("notesListPane").style.display = "none";
+                document.getElementById("notesEditorPane").style.display = "none";
+            }
+        });
+    </script>
 </body>
 </html>
