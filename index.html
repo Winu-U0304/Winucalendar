@@ -6,7 +6,9 @@
     <meta name="google-site-verification" content="vNgRrpb3UvoY39B0QklxDmnc73egTqjaeguz7IusimM" />
     <title>Super Multi App & Premium Diary</title>
     <style>
-        /* システム共通変数の定義 */
+        /* ==================================================
+           システム共通変数 & アニメーション変数
+        ================================================== */
         :root {
             --bg-color: #121212;
             --card-bg: #1e1e1e;
@@ -17,6 +19,8 @@
             --border-color: #444;
             --bg-input: #333;
             --text-main: #ffffff;
+            --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         * {
@@ -36,20 +40,113 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             min-height: 100vh;
-            transition: background 0.3s, color 0.3s;
+            transition: background-color 0.35s var(--ease-smooth), color 0.35s var(--ease-smooth);
         }
 
         .hidden {
             display: none !important;
         }
 
-        /* --------------------------------------------------
-           ホーム画面（設定パネル + モード選択）
-        -------------------------------------------------- */
+        /* ==================================================
+           キーフレームアニメーション定義
+        ================================================== */
+        @keyframes homeStaggerIn {
+            0% {
+                opacity: 0;
+                transform: translateY(18px) scale(0.97);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes fullscreenEnter {
+            0% {
+                opacity: 0;
+                transform: scale(0.94);
+                filter: blur(4px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes fullscreenExit {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+        }
+
+        @keyframes cardPopIn {
+            0% {
+                opacity: 0;
+                transform: translateY(16px) scale(0.98);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(255, 159, 10, 0.45);
+            }
+            50% {
+                box-shadow: 0 0 0 12px rgba(255, 159, 10, 0);
+            }
+        }
+
+        @keyframes bannerSpringIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-28px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes resultPop {
+            0% {
+                transform: scale(0.96);
+                color: var(--accent-color);
+            }
+            100% {
+                transform: scale(1);
+                color: #ffffff;
+            }
+        }
+
+        .anim-home-enter .settings-panel {
+            animation: homeStaggerIn 0.45s var(--ease-smooth) both;
+        }
+        .anim-home-enter .home-title {
+            animation: homeStaggerIn 0.45s 0.06s var(--ease-smooth) both;
+        }
+        .anim-home-enter .home-mode-btn:nth-child(1) { animation: homeStaggerIn 0.42s 0.08s var(--ease-smooth) both; }
+        .anim-home-enter .home-mode-btn:nth-child(2) { animation: homeStaggerIn 0.42s 0.12s var(--ease-smooth) both; }
+        .anim-home-enter .home-mode-btn:nth-child(3) { animation: homeStaggerIn 0.42s 0.16s var(--ease-smooth) both; }
+        .anim-home-enter .home-mode-btn:nth-child(4) { animation: homeStaggerIn 0.42s 0.20s var(--ease-smooth) both; }
+        .anim-home-enter .home-mode-btn:nth-child(5) { animation: homeStaggerIn 0.42s 0.24s var(--ease-smooth) both; }
+        .anim-home-enter .home-mode-btn:nth-child(6) { animation: homeStaggerIn 0.42s 0.28s var(--ease-smooth) both; }
+
+        /* ==================================================
+           1. ホーム画面（設定パネル + モード選択）
+        ================================================== */
         #home-view {
             width: 100%;
             max-width: 720px;
-            padding: 20px 15px;
+            padding: 20px 15px 32px;
             display: flex;
             flex-direction: column;
             gap: 20px;
@@ -69,6 +166,7 @@
             gap: 10px;
             font-size: 13px;
             border: 1px solid var(--border-color);
+            transition: background-color 0.3s var(--ease-smooth), border-color 0.3s var(--ease-smooth);
         }
 
         .setting-item {
@@ -84,6 +182,12 @@
             border: 1px solid var(--border-color);
             background: var(--bg-input);
             color: var(--text-color);
+            transition: border-color 0.2s var(--ease-smooth), transform 0.15s var(--ease-smooth);
+        }
+
+        select:focus, input[type="color"]:focus {
+            outline: none;
+            border-color: var(--accent-color);
         }
 
         input[type="color"] {
@@ -97,7 +201,8 @@
             font-weight: bold;
             color: #aaa;
             text-align: center;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
         }
 
         .home-menu-grid {
@@ -127,26 +232,32 @@
             justify-content: center;
             gap: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-            transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease;
+            transition: transform 0.24s var(--ease-spring), border-color 0.22s var(--ease-smooth), box-shadow 0.22s var(--ease-smooth);
         }
 
         .home-mode-btn:hover {
             border-color: var(--accent-color);
-            transform: translateY(-2px);
+            transform: translateY(-4px) scale(1.015);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
         }
 
         .home-mode-btn:active {
-            transform: scale(0.96);
+            transform: scale(0.95);
+        }
+
+        .home-mode-btn:hover .mode-icon {
+            transform: scale(1.15) rotate(-4deg);
         }
 
         .mode-icon {
             font-size: 28px;
             line-height: 1;
+            transition: transform 0.28s var(--ease-spring);
         }
 
-        /* --------------------------------------------------
-           完全フルスクリーン表示ビューポート (100vw x 100vh)
-        -------------------------------------------------- */
+        /* ==================================================
+           2. 完全フルスクリーン表示ビューポート (100vw x 100vh)
+        ================================================== */
         #fullscreen-app-view {
             position: fixed;
             top: 0;
@@ -158,6 +269,12 @@
             flex-direction: column;
             z-index: 100;
             overflow-y: auto;
+            animation: fullscreenEnter 0.34s var(--ease-smooth) both;
+        }
+
+        #fullscreen-app-view.closing {
+            animation: fullscreenExit 0.22s var(--ease-smooth) both;
+            pointer-events: none;
         }
 
         .app-top-bar {
@@ -166,35 +283,40 @@
             align-items: center;
             justify-content: space-between;
             padding: 10px 16px;
-            background-color: rgba(0, 0, 0, 0.25);
+            background-color: rgba(0, 0, 0, 0.28);
+            backdrop-filter: blur(8px);
             border-bottom: 1px solid var(--border-color);
             flex-shrink: 0;
         }
 
         /* 左上の青い戻るボタン */
         .back-home-blue-btn {
+            position: relative;
+            overflow: hidden;
             background-color: var(--back-btn-color);
             color: #ffffff;
             border: none;
-            border-radius: 8px;
-            padding: 8px 16px;
+            border-radius: 10px;
+            padding: 8px 18px;
             font-size: 20px;
             font-weight: bold;
             line-height: 1;
             cursor: pointer;
-            box-shadow: 0 3px 10px rgba(10, 132, 255, 0.35);
+            box-shadow: 0 4px 14px rgba(10, 132, 255, 0.42);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.2s, transform 0.1s;
+            transition: transform 0.2s var(--ease-spring), box-shadow 0.2s var(--ease-smooth), filter 0.2s var(--ease-smooth);
         }
 
         .back-home-blue-btn:hover {
-            opacity: 0.9;
+            transform: translateX(-2px) scale(1.04);
+            box-shadow: 0 6px 18px rgba(10, 132, 255, 0.6);
+            filter: brightness(1.08);
         }
 
         .back-home-blue-btn:active {
-            transform: scale(0.95);
+            transform: scale(0.92);
         }
 
         .app-mode-badge {
@@ -205,6 +327,7 @@
             padding: 6px 14px;
             border-radius: 999px;
             border: 1px solid var(--border-color);
+            transition: transform 0.2s var(--ease-spring);
         }
 
         /* 画面幅100%・高さ目一杯のコンテンツ領域 */
@@ -233,6 +356,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            animation: cardPopIn 0.36s var(--ease-smooth) both;
         }
 
         /* 時計全画面特大表示 */
@@ -246,6 +370,7 @@
             color: #aaa;
             margin-bottom: 12px;
             letter-spacing: 3px;
+            transition: opacity 0.25s var(--ease-smooth);
         }
 
         #clock .display-time {
@@ -253,8 +378,13 @@
             font-weight: 800;
             letter-spacing: 3px;
             font-variant-numeric: tabular-nums;
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.65);
+            text-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
             margin: 10px 0;
+            transition: transform 0.18s var(--ease-spring);
+        }
+
+        #clock .display-time.tick {
+            transform: scale(1.015);
         }
 
         /* 手帳アプリ全画面レイアウト */
@@ -274,6 +404,11 @@
             letter-spacing: 1px;
             font-variant-numeric: tabular-nums;
             text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s var(--ease-smooth), text-shadow 0.3s var(--ease-smooth);
+        }
+
+        .display-time.running {
+            animation: pulseGlow 1.6s infinite var(--ease-smooth);
         }
 
         .date-display {
@@ -300,8 +435,15 @@
             background: var(--bg-input);
             color: #fff;
             font-size: 20px;
+            transition: border-color 0.2s var(--ease-smooth), transform 0.15s var(--ease-spring);
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            transform: scale(1.04);
         }
 
+        /* 共通ボタン設定 */
         button.btn {
             padding: 14px 24px;
             border: none;
@@ -312,10 +454,20 @@
             font-size: 16px;
             background: #444;
             color: #fff;
-            transition: opacity 0.2s;
+            transition: transform 0.2s var(--ease-spring), filter 0.2s var(--ease-smooth), background-color 0.2s var(--ease-smooth);
         }
-        button.btn:active { opacity: 0.7; }
-        button.btn-primary { background: var(--accent-color); color: #000; }
+        button.btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.08);
+        }
+        button.btn:active {
+            transform: scale(0.94);
+        }
+        button.btn-primary {
+            background: var(--accent-color);
+            color: #000;
+            box-shadow: 0 4px 14px rgba(255, 159, 10, 0.3);
+        }
 
         /* 電卓専用スタイル */
         #calc.app-card.active {
@@ -327,40 +479,55 @@
             width: 100%; height: 68px; background: #000; color: #fff;
             text-align: right; font-size: 36px; padding: 12px;
             border-radius: 10px; margin-bottom: 15px; border: none;
+            transition: transform 0.16s var(--ease-spring);
+        }
+        .calc-screen.pop {
+            animation: resultPop 0.24s var(--ease-spring);
         }
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; }
         .calc-grid button {
             padding: 20px; font-size: 22px; font-weight: bold;
             border: none; border-radius: 14px; cursor: pointer; background: #333; color: #fff;
+            transition: transform 0.16s var(--ease-spring), filter 0.16s var(--ease-smooth), background-color 0.16s var(--ease-smooth);
+        }
+        .calc-grid button:hover {
+            filter: brightness(1.15);
+            transform: translateY(-2px);
+        }
+        .calc-grid button:active {
+            transform: scale(0.91);
         }
         .calc-grid button.operator { background: var(--accent-color); color: #000; }
         .calc-grid button.fn { background: #a5a5a5; color: #000; }
 
         /* Winucalendar 独自デザイン */
         .login-wrapper { padding: 10px; text-align: center; width: 100%; margin: auto 0; }
-        .premium-login-card { background: var(--card-bg); padding: 28px 22px; border-radius: 14px; border: 1px solid var(--border-color); max-width: 480px; margin: 0 auto; }
+        .premium-login-card { background: var(--card-bg); padding: 28px 22px; border-radius: 14px; border: 1px solid var(--border-color); max-width: 480px; margin: 0 auto; animation: cardPopIn 0.35s var(--ease-smooth); }
         .login-title { font-size: 22px; margin-bottom: 10px; letter-spacing: 1px; color: var(--accent-color); }
         .login-sub-text { font-size: 13px; color: #aaa; margin-bottom: 15px; }
         .login-box { display: flex; gap: 8px; justify-content: center; }
         .login-box input { padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: #121212; color: #fff; flex: 1; max-width: 240px; }
-        .login-box button { padding: 10px 16px; background: var(--accent-color); border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .login-box button { padding: 10px 16px; background: var(--accent-color); border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: transform 0.16s var(--ease-spring); }
+        .login-box button:active { transform: scale(0.95); }
         .error-msg { color: #ff453a; font-size: 12px; margin-top: 8px; }
 
         /* 手帳メインエリア */
-        .app-container { width: 100%; flex: 1; display: flex; flex-direction: column; text-align: left; }
+        .app-container { width: 100%; flex: 1; display: flex; flex-direction: column; text-align: left; animation: cardPopIn 0.35s var(--ease-smooth); }
         .app-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
         .welcome-neon { font-size: 11px; color: var(--accent-color); font-weight: bold; display: block; }
         #currentUser { font-size: 16px; font-weight: bold; }
 
         .tab-switcher { display: flex; background: #121212; padding: 4px; border-radius: 8px; gap: 4px; }
-        .inner-tab-btn { min-width: auto; padding: 6px 14px; font-size: 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; background: transparent; color: #888; }
+        .inner-tab-btn { min-width: auto; padding: 6px 14px; font-size: 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; background: transparent; color: #888; transition: background-color 0.25s var(--ease-smooth), color 0.25s var(--ease-smooth), transform 0.18s var(--ease-spring); }
+        .inner-tab-btn:active { transform: scale(0.95); }
         .inner-tab-btn.active { background: var(--card-bg); color: var(--text-color); }
         .header-controls { display: flex; gap: 6px; }
-        .header-controls button { padding: 6px 12px; font-size: 12px; background: #333; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+        .header-controls button { padding: 6px 12px; font-size: 12px; background: #333; color: #fff; border: none; border-radius: 6px; cursor: pointer; transition: transform 0.16s var(--ease-spring); }
+        .header-controls button:active { transform: scale(0.95); }
 
         /* スライドビューポート */
         .slide-viewport { width: 100%; flex: 1; overflow: hidden; position: relative; border-radius: 10px; background: #121212; }
-        .slide-container { display: flex; width: 200%; height: 100%; transition: transform 0.4s ease-in-out; }
+        .slide-container { display: flex; width: 200%; height: 100%; transition: transform 0.45s var(--ease-smooth); }
         .slide-page { width: 50%; height: 100%; padding: 12px; overflow-y: auto; }
 
         /* カレンダー表示 */
@@ -369,14 +536,17 @@
         .calendar-sidebar { text-align: center; padding: 14px; min-width: 130px; background: var(--card-bg); border-radius: 10px; display: flex; flex-direction: column; justify-content: center; }
         .month-eng { font-size: 14px; text-transform: uppercase; color: var(--accent-color); }
         .year-num { font-size: 12px; color: #888; }
-        .month-big { font-size: 46px; font-weight: 900; margin: 6px 0; }
+        .month-big { font-size: 46px; font-weight: 900; margin: 6px 0; transition: transform 0.22s var(--ease-spring); }
         .nav-buttons { display: flex; gap: 6px; justify-content: center; }
-        .nav-buttons button { padding: 5px 12px; background: #333; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+        .nav-buttons button { padding: 5px 12px; background: #333; color: #fff; border: none; border-radius: 5px; cursor: pointer; transition: transform 0.16s var(--ease-spring), background-color 0.16s var(--ease-smooth); }
+        .nav-buttons button:hover { background: #444; }
+        .nav-buttons button:active { transform: scale(0.9); }
 
         .calendar-body { flex: 1; display: flex; flex-direction: column; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; flex: 1; }
-        .calendar-day-cell { background: var(--card-bg); min-height: 64px; padding: 5px; border-radius: 8px; font-size: 12px; position: relative; cursor: pointer; border: 1px solid transparent; display: flex; flex-direction: column; justify-content: space-between; }
-        .calendar-day-cell:hover { border-color: var(--accent-color); }
+        .calendar-day-cell { background: var(--card-bg); min-height: 64px; padding: 5px; border-radius: 8px; font-size: 12px; position: relative; cursor: pointer; border: 1px solid transparent; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.18s var(--ease-spring), border-color 0.2s var(--ease-smooth); }
+        .calendar-day-cell:hover { border-color: var(--accent-color); transform: translateY(-2px); }
+        .calendar-day-cell:active { transform: scale(0.96); }
         .calendar-day-cell.today { border: 2px solid var(--accent-color); }
         .calendar-day-cell.other-month { opacity: 0.3; }
         .day-header-label { text-align: center; font-weight: bold; font-size: 12px; color: #888; padding: 4px 0; }
@@ -390,10 +560,12 @@
         .notes-editor-pane { width: 40%; background: #222; }
         .pane-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); margin-bottom: 8px; }
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); margin-bottom: 8px; }
-        .icon-btn { background: transparent; border: none; font-size: 16px; cursor: pointer; }
+        .icon-btn { background: transparent; border: none; font-size: 16px; cursor: pointer; transition: transform 0.2s var(--ease-spring); }
+        .icon-btn:hover { transform: scale(1.18); }
+        .icon-btn:active { transform: scale(0.9); }
         .folder-list, .note-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
-        .folder-item, .note-item { padding: 8px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: background 0.2s; }
-        .folder-item:hover, .note-item:hover { background: #333; }
+        .folder-item, .note-item { padding: 8px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: background-color 0.2s var(--ease-smooth), transform 0.16s var(--ease-spring); }
+        .folder-item:hover, .note-item:hover { background: #333; transform: translateX(2px); }
         .folder-item.active, .note-item.active { background: var(--accent-color); color: #000; font-weight: bold; }
         .editor-body { flex: 1; display: flex; flex-direction: column; gap: 8px; }
         .note-title-field { background: transparent; border: none; color: #fff; font-size: 17px; font-weight: bold; outline: none; padding: 6px 0; border-bottom: 1px solid #333; }
@@ -409,10 +581,11 @@
         }
 
         /* モーダル */
-        .modal-wrapper { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 15px; }
-        .modal-zoom-container { background: var(--card-bg); width: 100%; max-width: 460px; border-radius: 14px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .modal-wrapper { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.72); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 15px; transition: opacity 0.22s var(--ease-smooth); }
+        .modal-zoom-container { background: var(--card-bg); width: 100%; max-width: 460px; border-radius: 14px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 14px 34px rgba(0,0,0,0.55); animation: bannerSpringIn 0.34s var(--ease-spring) both; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .back-btn { padding: 6px 12px; background: #333; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; }
+        .back-btn { padding: 6px 12px; background: #333; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; transition: transform 0.16s var(--ease-spring); }
+        .back-btn:active { transform: scale(0.94); }
         .modal-body-vertical-layout { display: flex; flex-direction: column; gap: 12px; text-align: left; }
         .modal-body-vertical-layout label { font-size: 12px; color: var(--accent-color); font-weight: bold; display: block; margin-bottom: 4px; }
         .diary-title-section input, .diary-main-section textarea { width: 100%; padding: 10px; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 14px; outline: none; box-sizing: border-box; }
@@ -423,7 +596,7 @@
 <body>
 
     <!-- 1. ホーム画面 -->
-    <section id="home-view">
+    <section id="home-view" class="anim-home-enter">
         <header class="sys-header">
             <div class="settings-panel">
                 <div class="setting-item">
@@ -689,22 +862,61 @@
         };
         let currentLang = 'ja';
         let activeModeId = null;
+        let isClosingFullscreen = false;
+
+        function replayHomeAnimation() {
+            const homeEl = document.getElementById('home-view');
+            homeEl.classList.remove('anim-home-enter');
+            void homeEl.offsetWidth;
+            homeEl.classList.add('anim-home-enter');
+        }
 
         function goHome() {
-            activeModeId = null;
-            document.getElementById('fullscreen-app-view').classList.add('hidden');
-            document.getElementById('home-view').classList.remove('hidden');
-            document.querySelectorAll('.app-card').forEach(c => c.classList.remove('active'));
+            if (isClosingFullscreen) return;
+            const fsView = document.getElementById('fullscreen-app-view');
+            if (fsView.classList.contains('hidden')) return;
+
+            isClosingFullscreen = true;
+            fsView.classList.add('closing');
+
+            setTimeout(() => {
+                activeModeId = null;
+                fsView.classList.remove('closing');
+                fsView.classList.add('hidden');
+                document.querySelectorAll('.app-card').forEach(c => c.classList.remove('active'));
+
+                const homeEl = document.getElementById('home-view');
+                homeEl.classList.remove('hidden');
+                replayHomeAnimation();
+                isClosingFullscreen = false;
+            }, 210);
         }
 
         function openMode(modeId) {
+            if (isClosingFullscreen) return;
             activeModeId = modeId;
-            document.getElementById('home-view').classList.add('hidden');
-            document.getElementById('fullscreen-app-view').classList.remove('hidden');
 
-            document.querySelectorAll('.app-card').forEach(c => c.classList.remove('active'));
+            const homeEl = document.getElementById('home-view');
+            const fsView = document.getElementById('fullscreen-app-view');
+
+            homeEl.classList.add('hidden');
+            fsView.classList.remove('hidden');
+            fsView.classList.remove('closing');
+
+            void fsView.offsetWidth;
+            fsView.style.animation = 'none';
+            void fsView.offsetWidth;
+            fsView.style.animation = '';
+
+            document.querySelectorAll('.app-card').forEach(c => {
+                c.classList.remove('active');
+            });
+
             const targetCard = document.getElementById(modeId);
             if (targetCard) {
+                targetCard.style.animation = 'none';
+                void targetCard.offsetWidth;
+                targetCard.style.animation = '';
                 targetCard.classList.add('active');
             }
             updateCurrentModeTitle();
@@ -713,7 +925,10 @@
         function updateCurrentModeTitle() {
             if (!activeModeId) return;
             const d = langData[currentLang];
-            document.getElementById('app-mode-title').innerText = d[activeModeId] || activeModeId;
+            const badge = document.getElementById('app-mode-title');
+            badge.innerText = d[activeModeId] || activeModeId;
+            badge.style.transform = 'scale(1.08)';
+            setTimeout(() => { badge.style.transform = 'scale(1)'; }, 180);
         }
 
         function changeTheme(theme) {
@@ -833,20 +1048,27 @@
             const dateStr = currentLang === 'ja' ? `${year}年${month}月${date}日 (${day})` : `${year}/${month}/${date} (${day})`;
 
             document.getElementById('clock-date').innerText = dateStr;
-            document.getElementById('clock-time').innerText = `${hours}:${minutes}:${seconds}`;
+            const timeEl = document.getElementById('clock-time');
+            timeEl.innerText = `${hours}:${minutes}:${seconds}`;
+            timeEl.classList.add('tick');
+            setTimeout(() => timeEl.classList.remove('tick'), 150);
+
             checkAlarm(now);
         }, 1000);
 
         // 2. ストップウォッチ機能
         let swInterval = null, swElapsedTime = 0, swStartTime = 0;
         function toggleSW() {
+            const swTimeEl = document.getElementById('sw-time');
             if (swInterval) {
                 clearInterval(swInterval);
                 swElapsedTime += Date.now() - swStartTime;
                 swInterval = null;
+                swTimeEl.classList.remove('running');
             } else {
                 swStartTime = Date.now();
                 swInterval = setInterval(updateSW, 10);
+                swTimeEl.classList.add('running');
             }
             updateButtonLabels();
         }
@@ -855,7 +1077,9 @@
             clearInterval(swInterval);
             swInterval = null;
             swElapsedTime = 0;
-            document.getElementById('sw-time').innerText = "00:00.00";
+            const swTimeEl = document.getElementById('sw-time');
+            swTimeEl.classList.remove('running');
+            swTimeEl.innerText = "00:00.00";
             updateButtonLabels();
         }
 
@@ -870,10 +1094,12 @@
         // 3. タイマー機能
         let timerInterval = null, timerEndTime = 0, timerRemaining = 0;
         function toggleTimer() {
+            const timerTimeEl = document.getElementById('timer-time');
             if (timerInterval) {
                 clearInterval(timerInterval);
                 timerRemaining = timerEndTime - Date.now();
                 timerInterval = null;
+                timerTimeEl.classList.remove('running');
             } else {
                 if (timerRemaining <= 0) {
                     const h = parseInt(document.getElementById('timer-h').value) || 0;
@@ -883,7 +1109,8 @@
                 }
                 if (timerRemaining <= 0) return;
                 document.getElementById('timer-inputs').style.display = 'none';
-                document.getElementById('timer-time').style.display = 'block';
+                timerTimeEl.style.display = 'block';
+                timerTimeEl.classList.add('running');
                 timerEndTime = Date.now() + timerRemaining;
                 timerInterval = setInterval(updateTimer, 100);
             }
@@ -894,8 +1121,10 @@
             clearInterval(timerInterval);
             timerInterval = null;
             timerRemaining = 0;
+            const timerTimeEl = document.getElementById('timer-time');
+            timerTimeEl.classList.remove('running');
             document.getElementById('timer-inputs').style.display = 'flex';
-            document.getElementById('timer-time').style.display = 'none';
+            timerTimeEl.style.display = 'none';
             updateButtonLabels();
         }
 
@@ -944,7 +1173,13 @@
 
         // 5. 電卓機能
         const screen = document.getElementById('calc-screen');
-        function clearCalc() { screen.value = '0'; }
+        function pulseCalcScreen() {
+            screen.classList.remove('pop');
+            void screen.offsetWidth;
+            screen.classList.add('pop');
+        }
+
+        function clearCalc() { screen.value = '0'; pulseCalcScreen(); }
         function inputCalc(val) {
             if (screen.value === '0' && !isNaN(val)) screen.value = val;
             else screen.value += val;
@@ -958,8 +1193,10 @@
             try {
                 const result = new Function(`return ${screen.value}`)();
                 screen.value = Number(result.toFixed(8)).toString();
+                pulseCalcScreen();
             } catch (e) {
                 screen.value = 'Error';
+                pulseCalcScreen();
             }
         }
 
@@ -1049,7 +1286,11 @@
             const month = currentViewDate.getMonth();
 
             document.getElementById("calendarYear").innerText = year;
-            document.getElementById("calendarMonthNumber").innerText = month + 1;
+            const monthNumEl = document.getElementById("calendarMonthNumber");
+            monthNumEl.innerText = month + 1;
+            monthNumEl.style.transform = 'scale(1.12)';
+            setTimeout(() => { monthNumEl.style.transform = 'scale(1)'; }, 180);
+
             document.getElementById("calendarMonthEnglish").innerText = MONTH_NAMES_ENG[month];
 
             const daysOfWeek = ["日", "月", "火", "水", "木", "金", "土"];
