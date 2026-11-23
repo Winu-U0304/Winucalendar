@@ -35,9 +35,6 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             min-height: 100vh;
             transition: background 0.3s, color 0.3s;
         }
@@ -51,7 +48,7 @@
         -------------------------------------------------- */
         #home-view {
             width: 100%;
-            max-width: 600px;
+            max-width: 720px;
             padding: 20px 15px;
             display: flex;
             flex-direction: column;
@@ -59,7 +56,6 @@
             margin: 0 auto;
         }
 
-        /* 設定エリア */
         header.sys-header {
             width: 100%;
         }
@@ -96,7 +92,6 @@
             cursor: pointer;
         }
 
-        /* ホームのモード選択グリッド */
         .home-title {
             font-size: 15px;
             font-weight: bold;
@@ -150,7 +145,7 @@
         }
 
         /* --------------------------------------------------
-           全画面モード表示コンテナ (width: 100vw, height: 100vh)
+           完全フルスクリーン表示ビューポート (100vw x 100vh)
         -------------------------------------------------- */
         #fullscreen-app-view {
             position: fixed;
@@ -165,14 +160,13 @@
             overflow-y: auto;
         }
 
-        /* 全画面トップバー */
         .app-top-bar {
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 16px;
-            background-color: rgba(0, 0, 0, 0.2);
+            padding: 10px 16px;
+            background-color: rgba(0, 0, 0, 0.25);
             border-bottom: 1px solid var(--border-color);
             flex-shrink: 0;
         }
@@ -213,71 +207,68 @@
             border: 1px solid var(--border-color);
         }
 
-        /* 各アプリ全画面用コンテナ */
+        /* 画面幅100%・高さ目一杯のコンテンツ領域 */
         .app-fullscreen-content {
             flex: 1;
             width: 100%;
-            max-width: 720px;
-            margin: 0 auto;
-            padding: 20px 16px;
+            height: 100%;
+            padding: 12px 16px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
         }
 
-        /* 時計全画面用：中央に大きく配置 */
-        #clock.app-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            text-align: center;
-        }
-
-        #clock .date-display {
-            font-size: 24px;
-            color: #aaa;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-        }
-
-        #clock .display-time {
-            font-size: clamp(48px, 12vw, 84px);
-            font-weight: 800;
-            letter-spacing: 2px;
-            font-variant-numeric: tabular-nums;
-            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-        }
-
-        /* 手帳アプリ専用（縦幅いっぱいに使う） */
-        #diary.app-card {
-            width: 100%;
-            text-align: left;
-            padding: 0;
-            background: transparent;
-            box-shadow: none;
-        }
-
-        /* アプリ用カード基盤（時計以外） */
         .app-card {
             background: var(--card-bg);
             width: 100%;
+            flex: 1;
             border-radius: 16px;
-            padding: 25px;
+            padding: 20px;
             text-align: center;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
             display: none;
         }
 
         .app-card.active {
-            display: block;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* 時計・タイマーの文字表示 */
+        /* 時計全画面特大表示 */
+        #clock.app-card {
+            background: transparent;
+            box-shadow: none;
+        }
+
+        #clock .date-display {
+            font-size: clamp(18px, 4vw, 32px);
+            color: #aaa;
+            margin-bottom: 12px;
+            letter-spacing: 3px;
+        }
+
+        #clock .display-time {
+            font-size: clamp(60px, 16vw, 136px);
+            font-weight: 800;
+            letter-spacing: 3px;
+            font-variant-numeric: tabular-nums;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.65);
+            margin: 10px 0;
+        }
+
+        /* 手帳アプリ全画面レイアウト */
+        #diary.app-card.active {
+            justify-content: flex-start;
+            align-items: stretch;
+            text-align: left;
+            padding: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+
         .display-time {
-            font-size: 56px;
+            font-size: clamp(44px, 10vw, 76px);
             font-weight: 800;
             margin: 20px 0;
             letter-spacing: 1px;
@@ -297,28 +288,28 @@
             margin: 15px 0;
             display: flex;
             justify-content: center;
-            gap: 5px;
+            gap: 8px;
+            flex-wrap: wrap;
         }
         .input-group input {
-            width: 70px;
-            padding: 10px;
+            width: 80px;
+            padding: 12px;
             text-align: center;
-            border-radius: 6px;
+            border-radius: 8px;
             border: 1px solid var(--border-color);
             background: var(--bg-input);
             color: #fff;
-            font-size: 18px;
+            font-size: 20px;
         }
 
-        /* 共通ボタン設定 */
         button.btn {
-            padding: 12px 20px;
+            padding: 14px 24px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: bold;
             cursor: pointer;
-            margin: 5px;
-            font-size: 15px;
+            margin: 6px;
+            font-size: 16px;
             background: #444;
             color: #fff;
             transition: opacity 0.2s;
@@ -327,22 +318,27 @@
         button.btn-primary { background: var(--accent-color); color: #000; }
 
         /* 電卓専用スタイル */
-        .calc-screen {
-            width: 100%; height: 60px; background: #000; color: #fff;
-            text-align: right; font-size: 32px; padding: 10px;
-            border-radius: 8px; margin-bottom: 15px; border: none;
+        #calc.app-card.active {
+            max-width: 640px;
+            margin: 0 auto;
+            width: 100%;
         }
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .calc-screen {
+            width: 100%; height: 68px; background: #000; color: #fff;
+            text-align: right; font-size: 36px; padding: 12px;
+            border-radius: 10px; margin-bottom: 15px; border: none;
+        }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; }
         .calc-grid button {
-            padding: 18px; font-size: 20px; font-weight: bold;
-            border: none; border-radius: 50%; cursor: pointer; background: #333; color: #fff;
+            padding: 20px; font-size: 22px; font-weight: bold;
+            border: none; border-radius: 14px; cursor: pointer; background: #333; color: #fff;
         }
         .calc-grid button.operator { background: var(--accent-color); color: #000; }
         .calc-grid button.fn { background: #a5a5a5; color: #000; }
 
         /* Winucalendar 独自デザイン */
-        .login-wrapper { padding: 10px; text-align: center; width: 100%; }
-        .premium-login-card { background: var(--card-bg); padding: 25px 20px; border-radius: 14px; border: 1px solid var(--border-color); max-width: 440px; margin: 0 auto; }
+        .login-wrapper { padding: 10px; text-align: center; width: 100%; margin: auto 0; }
+        .premium-login-card { background: var(--card-bg); padding: 28px 22px; border-radius: 14px; border: 1px solid var(--border-color); max-width: 480px; margin: 0 auto; }
         .login-title { font-size: 22px; margin-bottom: 10px; letter-spacing: 1px; color: var(--accent-color); }
         .login-sub-text { font-size: 13px; color: #aaa; margin-bottom: 15px; }
         .login-box { display: flex; gap: 8px; justify-content: center; }
@@ -351,48 +347,47 @@
         .error-msg { color: #ff453a; font-size: 12px; margin-top: 8px; }
 
         /* 手帳メインエリア */
-        .app-container { width: 100%; text-align: left; }
+        .app-container { width: 100%; flex: 1; display: flex; flex-direction: column; text-align: left; }
         .app-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
         .welcome-neon { font-size: 11px; color: var(--accent-color); font-weight: bold; display: block; }
         #currentUser { font-size: 16px; font-weight: bold; }
 
-        /* 手帳内タブ */
         .tab-switcher { display: flex; background: #121212; padding: 4px; border-radius: 8px; gap: 4px; }
-        .inner-tab-btn { min-width: auto; padding: 6px 12px; font-size: 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; background: transparent; color: #888; }
+        .inner-tab-btn { min-width: auto; padding: 6px 14px; font-size: 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; background: transparent; color: #888; }
         .inner-tab-btn.active { background: var(--card-bg); color: var(--text-color); }
         .header-controls { display: flex; gap: 6px; }
-        .header-controls button { padding: 6px 10px; font-size: 12px; background: #333; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+        .header-controls button { padding: 6px 12px; font-size: 12px; background: #333; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
 
         /* スライドビューポート */
-        .slide-viewport { width: 100%; overflow: hidden; position: relative; border-radius: 8px; background: #121212; }
-        .slide-container { display: flex; width: 200%; transition: transform 0.4s ease-in-out; }
-        .slide-page { width: 50%; padding: 12px; }
+        .slide-viewport { width: 100%; flex: 1; overflow: hidden; position: relative; border-radius: 10px; background: #121212; }
+        .slide-container { display: flex; width: 200%; height: 100%; transition: transform 0.4s ease-in-out; }
+        .slide-page { width: 50%; height: 100%; padding: 12px; overflow-y: auto; }
 
         /* カレンダー表示 */
-        .calendar-wrapper { display: flex; flex-direction: column; gap: 15px; }
-        @media (min-width: 480px) { .calendar-wrapper { flex-direction: row; } }
-        .calendar-sidebar { text-align: center; padding: 10px; min-width: 110px; background: var(--card-bg); border-radius: 8px; display: flex; flex-direction: column; justify-content: center; }
+        .calendar-wrapper { display: flex; flex-direction: column; gap: 15px; height: 100%; }
+        @media (min-width: 540px) { .calendar-wrapper { flex-direction: row; } }
+        .calendar-sidebar { text-align: center; padding: 14px; min-width: 130px; background: var(--card-bg); border-radius: 10px; display: flex; flex-direction: column; justify-content: center; }
         .month-eng { font-size: 14px; text-transform: uppercase; color: var(--accent-color); }
         .year-num { font-size: 12px; color: #888; }
-        .month-big { font-size: 42px; font-weight: 900; margin: 5px 0; }
-        .nav-buttons { display: flex; gap: 5px; justify-content: center; }
-        .nav-buttons button { padding: 4px 10px; background: #333; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+        .month-big { font-size: 46px; font-weight: 900; margin: 6px 0; }
+        .nav-buttons { display: flex; gap: 6px; justify-content: center; }
+        .nav-buttons button { padding: 5px 12px; background: #333; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
 
-        .calendar-body { flex: 1; }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-        .calendar-day-cell { background: var(--card-bg); min-height: 55px; padding: 4px; border-radius: 6px; font-size: 11px; position: relative; cursor: pointer; border: 1px solid transparent; display: flex; flex-direction: column; justify-content: space-between; }
+        .calendar-body { flex: 1; display: flex; flex-direction: column; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; flex: 1; }
+        .calendar-day-cell { background: var(--card-bg); min-height: 64px; padding: 5px; border-radius: 8px; font-size: 12px; position: relative; cursor: pointer; border: 1px solid transparent; display: flex; flex-direction: column; justify-content: space-between; }
         .calendar-day-cell:hover { border-color: var(--accent-color); }
         .calendar-day-cell.today { border: 2px solid var(--accent-color); }
         .calendar-day-cell.other-month { opacity: 0.3; }
-        .day-header-label { text-align: center; font-weight: bold; font-size: 11px; color: #888; padding: 4px 0; }
-        .cell-schedule-list { font-size: 9px; color: var(--accent-color); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; }
+        .day-header-label { text-align: center; font-weight: bold; font-size: 12px; color: #888; padding: 4px 0; }
+        .cell-schedule-list { font-size: 10px; color: var(--accent-color); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; }
 
-        /* iPhone風メモ帳 */
-        .notes-app-wrapper { display: flex; height: 380px; background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); }
-        .notes-sidebar, .notes-list-pane, .notes-editor-pane { display: flex; flex-direction: column; height: 100%; padding: 10px; }
-        .notes-sidebar { width: 30%; border-right: 1px solid var(--border-color); background: #1a1a1a; }
-        .notes-list-pane { width: 35%; border-right: 1px solid var(--border-color); background: #1e1e1e; }
-        .notes-editor-pane { width: 35%; background: #222; }
+        /* メモ帳 */
+        .notes-app-wrapper { display: flex; height: calc(100vh - 150px); min-height: 360px; background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); }
+        .notes-sidebar, .notes-list-pane, .notes-editor-pane { display: flex; flex-direction: column; height: 100%; padding: 12px; }
+        .notes-sidebar { width: 28%; border-right: 1px solid var(--border-color); background: #1a1a1a; }
+        .notes-list-pane { width: 32%; border-right: 1px solid var(--border-color); background: #1e1e1e; }
+        .notes-editor-pane { width: 40%; background: #222; }
         .pane-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); margin-bottom: 8px; }
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); margin-bottom: 8px; }
         .icon-btn { background: transparent; border: none; font-size: 16px; cursor: pointer; }
@@ -401,8 +396,8 @@
         .folder-item:hover, .note-item:hover { background: #333; }
         .folder-item.active, .note-item.active { background: var(--accent-color); color: #000; font-weight: bold; }
         .editor-body { flex: 1; display: flex; flex-direction: column; gap: 8px; }
-        .note-title-field { background: transparent; border: none; color: #fff; font-size: 16px; font-weight: bold; outline: none; padding: 4px 0; border-bottom: 1px solid #333; }
-        .note-body-field { background: transparent; border: none; color: #fff; font-size: 14px; outline: none; resize: none; flex: 1; line-height: 1.5; }
+        .note-title-field { background: transparent; border: none; color: #fff; font-size: 17px; font-weight: bold; outline: none; padding: 6px 0; border-bottom: 1px solid #333; }
+        .note-body-field { background: transparent; border: none; color: #fff; font-size: 15px; outline: none; resize: none; flex: 1; line-height: 1.6; }
         .saved-status { font-size: 11px; color: #888; }
         .mobile-only-btn { display: none; padding: 4px 8px; font-size: 11px; background: #333; color: #fff; border: none; border-radius: 4px; }
 
@@ -427,7 +422,7 @@
 </head>
 <body>
 
-    <!-- 1. ホーム画面（設定パネル ＆ 各モード選択ボタン） -->
+    <!-- 1. ホーム画面 -->
     <section id="home-view">
         <header class="sys-header">
             <div class="settings-panel">
@@ -495,7 +490,7 @@
         </div>
     </section>
 
-    <!-- 2. 全画面モード表示ビューポート（トップバー + アプリ本体） -->
+    <!-- 2. 完全フルスクリーン表示ビューポート -->
     <section id="fullscreen-app-view" class="hidden">
         <div class="app-top-bar">
             <button type="button" class="back-home-blue-btn" onclick="goHome()" aria-label="ホームに戻る">←</button>
@@ -509,7 +504,7 @@
                 <div class="display-time" id="clock-time">00:00:00</div>
             </div>
 
-            <!-- 2. 手帳＆メモ（Winucalendar統合） -->
+            <!-- 2. 手帳＆メモ -->
             <div id="diary" class="app-card">
                 <div id="loginSection" class="login-wrapper">
                     <div class="premium-login-card">
@@ -576,8 +571,10 @@
             <!-- 3. ストップウォッチ -->
             <div id="sw" class="app-card">
                 <div class="display-time" id="sw-time">00:00.00</div>
-                <button class="btn btn-primary" id="sw-start" onclick="toggleSW()">スタート</button>
-                <button class="btn" id="sw-reset" onclick="resetSW()">リセット</button>
+                <div>
+                    <button class="btn btn-primary" id="sw-start" onclick="toggleSW()">スタート</button>
+                    <button class="btn" id="sw-reset" onclick="resetSW()">リセット</button>
+                </div>
             </div>
 
             <!-- 4. タイマー -->
@@ -588,18 +585,22 @@
                     <input type="number" id="timer-s" min="0" max="59" value="0" placeholder="秒">
                 </div>
                 <div class="display-time" id="timer-time" style="display:none;">00:00:00</div>
-                <button class="btn btn-primary" id="timer-start" onclick="toggleTimer()">スタート</button>
-                <button class="btn" id="timer-reset" onclick="resetTimer()">リセット</button>
+                <div>
+                    <button class="btn btn-primary" id="timer-start" onclick="toggleTimer()">スタート</button>
+                    <button class="btn" id="timer-reset" onclick="resetTimer()">リセット</button>
+                </div>
             </div>
 
             <!-- 5. アラーム -->
             <div id="alarm" class="app-card">
                 <div class="input-group">
-                    <input type="time" id="alarm-time" style="width:160px; font-size:20px; padding:8px;">
+                    <input type="time" id="alarm-time" style="width:180px; font-size:22px; padding:10px;">
                 </div>
-                <button class="btn btn-primary" id="alarm-set" onclick="setAlarm()">セット</button>
-                <button class="btn" id="alarm-clear" onclick="clearAlarm()">解除</button>
-                <div id="alarm-status" style="margin-top:15px; font-weight:bold; color:var(--accent-color);"></div>
+                <div>
+                    <button class="btn btn-primary" id="alarm-set" onclick="setAlarm()">セット</button>
+                    <button class="btn" id="alarm-clear" onclick="clearAlarm()">解除</button>
+                </div>
+                <div id="alarm-status" style="margin-top:18px; font-weight:bold; color:var(--accent-color); font-size:18px;"></div>
             </div>
 
             <!-- 6. 電卓 -->
@@ -631,7 +632,7 @@
         </div>
     </section>
 
-    <!-- 通知ポップアップ（アラーム停止窓） -->
+    <!-- 通知ポップアップ -->
     <div id="notificationBanner" class="modal-wrapper hidden" style="background: rgba(0,0,0,0.6); align-items: flex-start; padding-top: 30px;">
         <div class="modal-zoom-container" style="background: #ff9f0a; color: #000; text-align: center; max-width: 380px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);">
             <h2 style="font-size: 20px; margin-bottom: 8px;">⏰ <span id="notif-title">時間になりました！</span></h2>
@@ -666,7 +667,6 @@
     </div>
 
     <script>
-        // 総合多言語リソース
         const langData = {
             ja: {
                 homeSelect: "モードを選択してください",
@@ -690,7 +690,6 @@
         let currentLang = 'ja';
         let activeModeId = null;
 
-        // ホーム画面へ戻る（全画面表示を解除）
         function goHome() {
             activeModeId = null;
             document.getElementById('fullscreen-app-view').classList.add('hidden');
@@ -698,7 +697,6 @@
             document.querySelectorAll('.app-card').forEach(c => c.classList.remove('active'));
         }
 
-        // 選択したモードを完全全画面表示にする
         function openMode(modeId) {
             activeModeId = modeId;
             document.getElementById('home-view').classList.add('hidden');
@@ -718,7 +716,6 @@
             document.getElementById('app-mode-title').innerText = d[activeModeId] || activeModeId;
         }
 
-        // 共通カラーパレット切り替え
         function changeTheme(theme) {
             const isDark = theme === 'dark';
             const bg = isDark ? '#121212' : '#f0f0f0';
@@ -775,7 +772,6 @@
             updateAlarmStatusDisplay();
         }
 
-        // 通知アラート＆電子音
         let alertSoundTimer = null;
         let audioCtx = null;
 
@@ -967,9 +963,7 @@
             }
         }
 
-        // ==========================================
-        // Winucalendar 手帳システム（ユーザーデータ完全分離版）
-        // ==========================================
+        // Winucalendar 手帳システム
         const STORAGE_KEY_SESSION = "winucalendar_v3_sessionUser";
 
         let diaryData = {};
@@ -1163,7 +1157,6 @@
             renderCalendarGrid();
         });
 
-        // メモ帳機能
         document.getElementById("addFolderBtn").addEventListener("click", () => {
             const folderName = prompt("新しいフォルダ名を入力してください：");
             if (!folderName || !folderName.trim()) return;
@@ -1302,7 +1295,6 @@
             document.getElementById("noteSavedStatus").innerText = "自動保存済";
         }
 
-        // 左右滑らかスライド
         document.getElementById("tabCalendarBtn").addEventListener("click", function() {
             switchInternalPage(0, this);
         });
@@ -1320,7 +1312,6 @@
             container.style.transform = `translateX(-${pageIndex * 50}%)`;
         }
 
-        // スマホ専用
         document.getElementById("backToFoldersBtn").addEventListener("click", () => {
             document.getElementById("notesListPane").style.display = "none";
             document.getElementById("notesSidebar").style.display = "flex";
